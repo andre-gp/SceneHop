@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.RegularExpressions;
+using Unity.Properties;
 using UnityEditor;
 using UnityEditor.Overlays;
 using UnityEditor.SceneManagement;
@@ -13,20 +14,28 @@ namespace SceneHop.Editor
     public class SceneHopOverlay : Overlay
     {
         #region Default Values
-        const string ASSETS_PATH = "Packages/com.gaton.editor.scenehop/Editor/Assets/";
+        private const string ASSETS_PATH = "Packages/com.gaton.editor.scenehop/Editor/Assets/";
 
-        const string USS_PATH = ASSETS_PATH + "SceneHop.uss";
-        const string SETTINGS_LABEL = "Settings";
+        private const string USS_PATH = ASSETS_PATH + "SceneHop.uss";
+        #endregion
+
+
+        #region Bound Fields
+        /// <summary>
+        /// This field preserves the foldout value between multiple creations of the overlay
+        /// </summary>
+        [SerializeField] private bool foldoutState = true;
         #endregion
 
         #region Fields
-        StyleSheet styleSheet;
+        private VisualTreeAsset visualTree;
 
-        SearchField searchField;
+        private StyleSheet styleSheet;
 
-        VisualElement scenesGrid;
+        private SearchField searchField;
 
-        bool foldoutState = true;
+        private VisualElement scenesGrid;
+
         #endregion
 
         #region Constructor
@@ -34,6 +43,7 @@ namespace SceneHop.Editor
         {
             searchField = new SearchField();
             styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS_PATH);
+            visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneHop.uxml");
         }
         #endregion
 
@@ -54,15 +64,16 @@ namespace SceneHop.Editor
 
         public override VisualElement CreatePanelContent()
         {
-            var root = new VisualElement();
+            var root = visualTree.CloneTree();
+            root.dataSource = this;
 
+            // The uxml already loads the style sheet, but to guarantee that it is going to be
+            // linked, I am still adding it again here.
             root.styleSheets.Add(styleSheet);
 
-            root.Add(CreateConfigurations());
+            CreateConfigurations(root);
 
-            root.Add(CreateSeparator());
-
-            root.Add(CreateScenesGrid());
+            CreateScenesGrid(root);
 
             return root;
         }
@@ -71,41 +82,24 @@ namespace SceneHop.Editor
 
         #region Private Methods
 
-        private VisualElement CreateConfigurations()
+        private void CreateConfigurations(VisualElement root)
         {
-            Foldout foldout = new Foldout()
+            Foldout foldout = root.Q<Foldout>("foldout-settings");
+            foldout.SetBinding(nameof(foldout.value), new DataBinding()
             {
-                value = foldoutState,
-                text = SETTINGS_LABEL
-            };
-
-            foldout.AddToClassList("foldout");
-
-            foldout.RegisterValueChangedCallback(callback =>
-            {
-                foldoutState = callback.newValue;
+                bindingMode = BindingMode.TwoWay,
+                dataSourcePath = PropertyPath.FromName(nameof(this.foldoutState))
             });
 
-            foldout.Add(searchField.GetSearchField(() => { RefreshOverlay(); }));
-
-            foldout.style.flexGrow = 0;
-            foldout.style.flexShrink = 0;
-
-            return foldout;
+            searchField.InitSearchField(root, () => { RefreshOverlay(); });
         }
 
 
-        private VisualElement CreateScenesGrid()
+        private void CreateScenesGrid(VisualElement root)
         {
-            ScrollView scrollView = new ScrollView(ScrollViewMode.Vertical);
-            scenesGrid = new VisualElement();
-            scenesGrid.AddToClassList("grid");
+            scenesGrid = root.Q<VisualElement>("grid-content");
 
             RefreshGrid(scenesGrid);
-
-            scrollView.Add(scenesGrid);
-
-            return scrollView;
         }
 
         private void RefreshOverlay()
@@ -150,14 +144,6 @@ namespace SceneHop.Editor
 
                 grid.Add(button);
             }
-        }
-
-        private VisualElement CreateSeparator()
-        {
-            var separator = new VisualElement();
-            separator.AddToClassList("separator");
-
-            return separator;
         }
 
         #endregion

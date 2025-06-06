@@ -1,11 +1,9 @@
-/* ---------- Foldout ---------- */
 .foldout {
     flex-direction: column;
     align-items: stretch;
     padding: 5px;
 }
 
-/* ---------- Buttons ---------- */
 .scene-button {
     width: 60px;
     height: 40px;
@@ -20,23 +18,25 @@
     background-color: rgb(26, 77, 26);
 }
 
-/* ---------- Grid ---------- */
 .grid {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-start;
 }
 
-/* ---------- Dropdown ---------- */
 .dropdown {
     max-width: 100px;
 }
 
-/* ---------- Separator ---------- */
 .separator {
     height: 1px;
     min-height: 1px;
+	max-height: 1px;
     background-color: rgb(128, 128, 128);
     margin-top: 5px;
     margin-bottom: 5px;
+}
+
+.text-field {
+    margin-right: 10px
 }

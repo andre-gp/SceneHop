@@ -24,23 +24,15 @@ namespace SceneHop.Editor
         #endregion
 
         #region Public Methods
-        public VisualElement GetSearchField(Action onRefreshOverlay)
+        public VisualElement InitSearchField(VisualElement root, Action onRefreshOverlay)
         {
-            VisualElement root = new VisualElement();
-
-            EnumField dropdownField = new EnumField(searchFilter);
-            dropdownField.AddToClassList("dropdown");
-
-            root.Add(dropdownField);
-
+            EnumField dropdownField = root.Q<EnumField>("search-filter");
+            dropdownField.Init(searchFilter);
+            
             #region Text Field
-            VisualElement textField = new VisualElement();
 
-            var inputField = new TextField();
+            var inputField = root.Q<TextField>("input-field");
             UpdateInputText(inputField);
-            inputField.textEdition.isDelayed = true;
-            inputField.textEdition.placeholder = DEFAULT_NAME;
-            inputField.style.marginRight = 10;
 
             inputField.RegisterValueChangedCallback(callback =>
             {
@@ -56,17 +48,15 @@ namespace SceneHop.Editor
                 onRefreshOverlay();
             });
 
-            UpdateTextFieldVisibility(textField, inputField);
-            textField.Add(inputField);
+            UpdateTextFieldVisibility(inputField);
 
-            root.Add(textField);
             #endregion
 
             dropdownField.RegisterValueChangedCallback(callback =>
             {
                 searchFilter = (SearchFilter)callback.newValue;
 
-                UpdateTextFieldVisibility(textField, inputField);
+                UpdateTextFieldVisibility(inputField);
 
                 UpdateInputText(inputField);
 
@@ -116,20 +106,20 @@ namespace SceneHop.Editor
             inputField.value = searchFilter == SearchFilter.Path ? pathValue : nameValue;
         }
 
-        private void UpdateTextFieldVisibility(VisualElement root, TextField inputField)
+        private void UpdateTextFieldVisibility(TextField inputField)
         {
             switch (searchFilter)
             {
                 case SearchFilter.Path:
-                    root.style.display = DisplayStyle.Flex;
+                    inputField.style.display = DisplayStyle.Flex;
                     inputField.textEdition.placeholder = "Assets/Scenes/";
                     break;
                 case SearchFilter.Name:
-                    root.style.display = DisplayStyle.Flex;
+                    inputField.style.display = DisplayStyle.Flex;
                     inputField.textEdition.placeholder = "SampleScene";
                     break;
                 case SearchFilter.AllScenes:
-                    root.style.display = DisplayStyle.None;
+                    inputField.style.display = DisplayStyle.None;
                     break;
                 default:
                     break;
