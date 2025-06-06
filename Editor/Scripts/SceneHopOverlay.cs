@@ -6,7 +6,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace SceneHop
+namespace SceneHop.Editor
 {
     [Icon(ASSETS_PATH + "SceneHopIcon.png")]
     [Overlay(typeof(EditorWindow), "", minWidth = 173, maxWidth = 9999, minHeight = 160, maxHeight = 9999)]

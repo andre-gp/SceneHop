@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.UIElements;
 
-namespace SceneHop
+namespace SceneHop.Editor
 {
     class SearchField : VisualElement
     {

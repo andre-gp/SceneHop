@@ -1,6 +1,6 @@
 {
     "name": "gaton.editor.scenehop.Editor",
-    "rootNamespace": "",
+    "rootNamespace": "SceneHop.Editor",
     "references": [],
     "includePlatforms": [
         "Editor"
