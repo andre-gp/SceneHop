@@ -29,12 +29,27 @@ namespace SceneHop
         bool foldoutState = true;
         #endregion
 
-        #region Public Methods
-
-        public SceneHopOverlay()
+        #region Constructor
+        SceneHopOverlay()
         {
             searchField = new SearchField();
             styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS_PATH);
+        }
+        #endregion
+
+        #region Public Methods
+        public override void OnCreated()
+        {
+            base.OnCreated();
+
+            EditorApplication.projectChanged += RefreshOverlay;
+        }
+
+        public override void OnWillBeDestroyed()
+        {
+            base.OnWillBeDestroyed();
+
+            EditorApplication.projectChanged -= RefreshOverlay;
         }
 
         public override VisualElement CreatePanelContent()
