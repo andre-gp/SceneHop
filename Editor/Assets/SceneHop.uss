@@ -31,12 +31,23 @@
 .separator {
     height: 1px;
     min-height: 1px;
-	max-height: 1px;
+    max-height: 1px;
     background-color: rgb(128, 128, 128);
     margin-top: 5px;
     margin-bottom: 5px;
 }
 
 .text-field {
-    margin-right: 10px
+    margin-right: 10px;
+}
+
+.zoom-slider {
+    height: 25px;
+    width: 50px;
+    position: absolute;
+    right: 0;
+    display: flex;
+    top: 5px;
+    min-height: 25px;
+    min-width: 50px;
 }

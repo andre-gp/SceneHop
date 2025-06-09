@@ -17,6 +17,8 @@ namespace SceneHop.Editor
         private const string ASSETS_PATH = "Packages/com.gaton.editor.scenehop/Editor/Assets/";
 
         private const string USS_PATH = ASSETS_PATH + "SceneHop.uss";
+
+        private Vector2 defaultBtnSize = new Vector2(60, 40);
         #endregion
 
 
@@ -25,10 +27,13 @@ namespace SceneHop.Editor
         /// This field preserves the foldout value between multiple creations of the overlay
         /// </summary>
         [SerializeField] private bool foldoutState = true;
+
+        [SerializeField] private float buttonScale = 1f;
         #endregion
 
         #region Fields
-        private VisualTreeAsset visualTree;
+        private VisualTreeAsset mainWindow;
+        private VisualTreeAsset buttonAsset;
 
         private StyleSheet styleSheet;
 
@@ -43,7 +48,8 @@ namespace SceneHop.Editor
         {
             searchField = new SearchField();
             styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS_PATH);
-            visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneHop.uxml");
+            mainWindow = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneHop.uxml");
+            buttonAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneButton.uxml");
         }
         #endregion
 
@@ -64,7 +70,7 @@ namespace SceneHop.Editor
 
         public override VisualElement CreatePanelContent()
         {
-            var root = visualTree.CloneTree();
+            var root = mainWindow.CloneTree();
             root.dataSource = this;
 
             // The uxml already loads the style sheet, but to guarantee that it is going to be
@@ -91,9 +97,29 @@ namespace SceneHop.Editor
                 dataSourcePath = PropertyPath.FromName(nameof(this.foldoutState))
             });
 
+            Slider scaleSlider = root.Q<Slider>("slider-scale");
+            scaleSlider.SetBinding(nameof(scaleSlider.value), new DataBinding()
+            {
+                bindingMode = BindingMode.TwoWay,
+                dataSourcePath = PropertyPath.FromName(nameof(buttonScale))
+            });
+            scaleSlider.RegisterValueChangedCallback(callback =>
+            {
+                UpdateButtonsScale(callback.newValue);
+            });
+
             searchField.InitSearchField(root, () => { RefreshOverlay(); });
         }
 
+        private void UpdateButtonsScale(float scale)
+        {
+            foreach (var btn in scenesGrid.Children())
+            {
+                btn.style.width = defaultBtnSize.x * scale;
+                btn.style.height = defaultBtnSize.y * scale;
+                btn.style.fontSize = 8 * (scale + 0.1f);
+            }
+        }
 
         private void CreateScenesGrid(VisualElement root)
         {
@@ -123,6 +149,7 @@ namespace SceneHop.Editor
             for (int i = 0; i < assets.Length; i++)
             {
                 string path = AssetDatabase.GUIDToAssetPath(assets[i]);
+
                 var button = new Button(() =>
                 {
                     if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
@@ -130,6 +157,27 @@ namespace SceneHop.Editor
                         EditorSceneManager.OpenScene(path);
                     }
                 });
+
+                button.AddManipulator(new ContextualMenuManipulator((ContextualMenuPopulateEvent callback) =>
+                {
+                    callback.menu.AppendAction("Load Scene", (x) => 
+                    {
+                        if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+                        {
+                            EditorSceneManager.OpenScene(path);
+                        }
+                    });
+
+                    callback.menu.AppendAction("Select Asset", (x) => 
+                    {
+                        Selection.activeObject = AssetDatabase.LoadAssetAtPath<SceneAsset>(path); 
+                    });
+                }));
+
+                //button.RegisterCallback<ContextualMenuPopulateEvent>(callback =>
+                //{
+                    
+                //});
 
                 string fileName = Path.GetFileNameWithoutExtension(path);
 
@@ -144,6 +192,8 @@ namespace SceneHop.Editor
 
                 grid.Add(button);
             }
+
+            UpdateButtonsScale(buttonScale);
         }
 
         #endregion
