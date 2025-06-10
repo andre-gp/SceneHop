@@ -21,17 +21,9 @@ namespace SceneHop.Editor
         private Vector2 defaultBtnSize = new Vector2(60, 40);
         #endregion
 
-
-        #region Bound Fields
-        /// <summary>
-        /// This field preserves the foldout value between multiple creations of the overlay
-        /// </summary>
-        [SerializeField] private bool foldoutState = true;
-
-        [SerializeField] private float buttonScale = 1f;
-        #endregion
-
         #region Fields
+        private SceneOverlayData data;
+
         private VisualTreeAsset mainWindow;
         private VisualTreeAsset buttonAsset;
 
@@ -41,15 +33,41 @@ namespace SceneHop.Editor
 
         private VisualElement scenesGrid;
 
+        private string savePath;
+
         #endregion
 
         #region Constructor
         SceneHopOverlay()
         {
-            searchField = new SearchField();
+            savePath = Application.dataPath + "/../Library/SceneHop/data.json";
+
+            LoadData();
+            searchField = new SearchField(data);
             styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS_PATH);
             mainWindow = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneHop.uxml");
-            buttonAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneButton.uxml");
+            buttonAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneButton.uxml");           
+        }
+        private void LoadData()
+        {
+            if (File.Exists(savePath))
+            {
+                data = JsonUtility.FromJson<SceneOverlayData>(File.ReadAllText(savePath));
+            }
+            else
+            {
+                data = new SceneOverlayData();
+            }
+
+            data.OnUpdateValue += data =>
+            {
+                SaveData();
+            };
+        }
+        private void SaveData()
+        {
+            new FileInfo(savePath).Directory.Create();
+            File.WriteAllText(savePath, JsonUtility.ToJson(data));
         }
         #endregion
 
@@ -71,7 +89,7 @@ namespace SceneHop.Editor
         public override VisualElement CreatePanelContent()
         {
             var root = mainWindow.CloneTree();
-            root.dataSource = this;
+            root.dataSource = this.data;
 
             // The uxml already loads the style sheet, but to guarantee that it is going to be
             // linked, I am still adding it again here.
@@ -94,14 +112,14 @@ namespace SceneHop.Editor
             foldout.SetBinding(nameof(foldout.value), new DataBinding()
             {
                 bindingMode = BindingMode.TwoWay,
-                dataSourcePath = PropertyPath.FromName(nameof(this.foldoutState))
+                dataSourcePath = PropertyPath.FromName(nameof(this.data.FoldoutState))
             });
 
             Slider scaleSlider = root.Q<Slider>("slider-scale");
             scaleSlider.SetBinding(nameof(scaleSlider.value), new DataBinding()
             {
                 bindingMode = BindingMode.TwoWay,
-                dataSourcePath = PropertyPath.FromName(nameof(buttonScale))
+                dataSourcePath = PropertyPath.FromName(nameof(this.data.ButtonScale))
             });
             scaleSlider.RegisterValueChangedCallback(callback =>
             {
@@ -174,11 +192,6 @@ namespace SceneHop.Editor
                     });
                 }));
 
-                //button.RegisterCallback<ContextualMenuPopulateEvent>(callback =>
-                //{
-                    
-                //});
-
                 string fileName = Path.GetFileNameWithoutExtension(path);
 
                 // Regex to add white spaces to 'CamelCasedNames -> Camel Cased Names'
@@ -193,7 +206,7 @@ namespace SceneHop.Editor
                 grid.Add(button);
             }
 
-            UpdateButtonsScale(buttonScale);
+            UpdateButtonsScale(data.ButtonScale);
         }
 
         #endregion

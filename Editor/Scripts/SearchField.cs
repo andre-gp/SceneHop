@@ -12,18 +12,18 @@ namespace SceneHop.Editor
             AllScenes = 2
         }
 
-        #region Default Values
-        const string DEFAULT_PATH = "Assets/Scenes/";
-        const string DEFAULT_NAME = "SampleScene";
-        #endregion
-
         #region Member Fields
-        string pathValue = DEFAULT_PATH;
-        string nameValue = DEFAULT_NAME;
-        SearchFilter searchFilter = SearchFilter.Path;
+        private SceneOverlayData data = null;
+
+        private SearchFilter searchFilter = SearchFilter.Path;
         #endregion
 
         #region Public Methods
+        public SearchField(SceneOverlayData data)
+        {
+            this.data = data;
+        }
+
         public VisualElement InitSearchField(VisualElement root, Action onRefreshOverlay)
         {
             EnumField dropdownField = root.Q<EnumField>("search-filter");
@@ -38,11 +38,11 @@ namespace SceneHop.Editor
             {
                 if (searchFilter == SearchFilter.Path)
                 {
-                    pathValue = callback.newValue;
+                    data.CurrentPath = callback.newValue;
                 }
                 else if (searchFilter == SearchFilter.Name)
                 {
-                    nameValue = callback.newValue;
+                    data.CurrentName = callback.newValue;
                 }
 
                 onRefreshOverlay();
@@ -77,7 +77,7 @@ namespace SceneHop.Editor
                     return "t:scene";
 
                 case SearchFilter.Name:
-                    return nameValue + " t:scene";
+                    return data.CurrentName + " t:scene";
             }
         }
 
@@ -103,7 +103,7 @@ namespace SceneHop.Editor
         #region Private Methods
         private void UpdateInputText(TextField inputField)
         {
-            inputField.value = searchFilter == SearchFilter.Path ? pathValue : nameValue;
+            inputField.value = searchFilter == SearchFilter.Path ? data.CurrentPath : data.CurrentName;
         }
 
         private void UpdateTextFieldVisibility(TextField inputField)
@@ -112,7 +112,7 @@ namespace SceneHop.Editor
             {
                 case SearchFilter.Path:
                     inputField.style.display = DisplayStyle.Flex;
-                    inputField.textEdition.placeholder = "Assets/Scenes/";
+                    inputField.textEdition.placeholder = SceneOverlayData.DEFAULT_PATH;
                     break;
                 case SearchFilter.Name:
                     inputField.style.display = DisplayStyle.Flex;
@@ -128,11 +128,11 @@ namespace SceneHop.Editor
 
         private string[] SplitPath()
         {
-            string[] paths = pathValue.Split(';');
+            string[] paths = data.CurrentPath.Split(';');
 
             if (string.IsNullOrEmpty(paths[0]))
             {
-                paths[0] = DEFAULT_PATH;
+                paths[0] = SceneOverlayData.DEFAULT_PATH;
             }
 
             return paths;
