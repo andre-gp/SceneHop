@@ -21,51 +21,78 @@ namespace SceneHop.Editor
 
         #endregion
 
+        #region Member Fields
+
         [SerializeField] List<SceneGroup> favoritesData = new List<SceneGroup>();
 
         [SerializeField] private string currentPath = DEFAULT_PATH;
-        public string CurrentPath { get => this.currentPath; set { currentPath = value; InternalOnUpdateValue(); } }
+        public string CurrentPath 
+        { 
+            get => this.currentPath; 
+            set 
+            {
+                if (value == currentPath)
+                    return;
+
+                currentPath = value; 
+                InternalOnUpdateValue(); 
+            } 
+        }
 
         [SerializeField] private string currentName = "SampleScene";
-        public string CurrentName { get => this.currentName; set { currentName = value; InternalOnUpdateValue(); } }
+        public string CurrentName 
+        { 
+            get => this.currentName; 
+            set 
+            {
+                if (value == currentName)
+                    return;
+
+                currentName = value; 
+                InternalOnUpdateValue(); 
+            } 
+        }
 
 
         [SerializeField] private bool foldoutState = true;
         /// <summary>
         /// This field preserves the foldout value between multiple creations of the overlay
         /// </summary>
-        [CreateProperty] public bool FoldoutState { get => this.foldoutState; set { foldoutState = value; InternalOnUpdateValue(); } }
+        [CreateProperty] public bool FoldoutState 
+        { 
+            get => this.foldoutState; 
+            set 
+            {
+                if (value == foldoutState)
+                    return;
+
+                foldoutState = value;
+                InternalOnUpdateValue(); 
+            } 
+        }
 
         [SerializeField] private float buttonScale = 1f;
-        [CreateProperty] public float ButtonScale { get => this.buttonScale; set { buttonScale = value; InternalOnUpdateValue(); } }
-        
+        [CreateProperty] public float ButtonScale 
+        { 
+            get => this.buttonScale; 
+            set 
+            {
+                if (value == buttonScale)
+                    return;
+
+                buttonScale = value; 
+                InternalOnUpdateValue(); 
+            } 
+        }
+
+        #endregion
+
 
         private void InternalOnUpdateValue()
         {
             Debug.Log("On Save Value");
             OnUpdateValue?.Invoke(this);            
         }
-
-        bool ShallowEquals(SceneOverlayData other)
-        {
-            if (other != null &&
-               this.CurrentPath == other.CurrentPath &&
-               this.CurrentName == other.CurrentName &&
-               this.FoldoutState == other.FoldoutState &&
-               this.ButtonScale == other.ButtonScale
-               )
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public override bool Equals(object obj)
-        {
-            
-        }
-
     }
 }
 
