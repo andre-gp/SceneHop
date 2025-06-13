@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Properties;
-using UnityEditor.UIElements;
+using UnityEditor;
 using UnityEngine.UIElements;
 
 namespace SceneHop.Editor
@@ -25,10 +25,10 @@ namespace SceneHop.Editor
             searches = new List<SearchType>() { new PathSearch(data), new NameSearch(data), new AllScenesSearch(data) };
         }
 
-        public VisualElement InitSearchField(VisualElement root, Action onRefreshOverlay)
+        public void InitSearchField(VisualElement root, Action onRefreshOverlay)
         {
             dropdown = root.Q<DropdownField>("search-filter");
-            dropdown.choices = searches.Select(x => x.Label).ToList();
+            UpdateDropdownChoices();
 
             var inputField = root.Q<TextField>("input-field");
 
@@ -57,7 +57,22 @@ namespace SceneHop.Editor
 
             searches[dropdown.index].InitSearch(inputField);
 
-            return root;
+            var button = root.Q<Button>("button-add");
+            button.clickable.clicked += () =>
+            {
+                if (EditorUtility.DisplayDialog("Favorite Scenes", "Create a new favorite scenes group?", "Create", "Cancel"))
+                {
+                    searches.Add(new FavoriteScenesSearch(data));
+                    UpdateDropdownChoices();
+
+                    dropdown.index = searches.Count - 1;
+                }
+            };
+        }
+
+        private void UpdateDropdownChoices()
+        {
+            dropdown.choices = searches.Select(x => x.Label).ToList();
         }
 
         public string[] RetrieveGuids()

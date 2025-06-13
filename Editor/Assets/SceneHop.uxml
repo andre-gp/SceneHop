@@ -2,8 +2,11 @@
     <Style src="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/SceneHop.uss?fileID=7433441132597879392&amp;guid=7a9758558ff76894cbba79b28d099527&amp;type=3#SceneHop" />
     <ui:VisualElement name="Root" style="flex-grow: 1;">
         <ui:Foldout text="Settings&#10;" name="foldout-settings" class="foldout" style="flex-shrink: 0; flex-grow: 1;">
-            <ui:VisualElement style="flex-wrap: nowrap; flex-direction: column; flex-grow: 1;">
-                <ui:DropdownField name="search-filter" class="dropdown" />
+            <ui:VisualElement style="flex-wrap: nowrap; flex-direction: column; flex-grow: 1; justify-content: space-around;">
+                <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: flex-start; align-items: center;">
+                    <ui:Button icon-image="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/AddIcon.png?fileID=2800000&amp;guid=3a42e8e652807bb4b8e61710f9752fc0&amp;type=3#AddIcon" name="button-add" class="small-button" />
+                    <ui:DropdownField name="search-filter" class="dropdown" />
+                </ui:VisualElement>
                 <ui:TextField is-delayed="true" name="input-field" class="text-field" />
             </ui:VisualElement>
         </ui:Foldout>

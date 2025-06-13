@@ -112,27 +112,3 @@ namespace SceneHop.Editor
     }
 }
 
-[Serializable]
-public class SceneGroup
-{
-    [SerializeField] string groupName;
-    [SerializeField] List<string> guids;
-
-    public SceneGroup(string groupName, List<string> guids)
-    {
-        this.groupName = groupName;
-        this.guids = guids;
-    }
-
-    public bool Add(string guid)
-    {
-        if (!guids.Contains(guid))
-        {
-            guids.Add(guid);
-
-            return true;
-        }
-
-        return false;
-    }
-}
