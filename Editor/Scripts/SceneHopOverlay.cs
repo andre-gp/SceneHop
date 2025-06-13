@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using Unity.Properties;
@@ -34,6 +35,8 @@ namespace SceneHop.Editor
         private VisualElement scenesGrid;
 
         private string savePath;
+
+        
 
         #endregion
 
@@ -155,18 +158,16 @@ namespace SceneHop.Editor
         {
             grid.Clear();
 
-            var paths = searchField.GetSearchPaths();
+            var guids = searchField.RetrieveGuids();
 
-            var assets = AssetDatabase.FindAssets(searchField.GetSearchFilter(), searchField.GetSearchPaths());
-
-            if (assets.Length <= 0)
+            if (guids.Length <= 0)
             {
                 grid.Add(new Label("Could not find any scenes!"));
             }
 
-            for (int i = 0; i < assets.Length; i++)
+            for (int i = 0; i < guids.Length; i++)
             {
-                string path = AssetDatabase.GUIDToAssetPath(assets[i]);
+                string path = AssetDatabase.GUIDToAssetPath(guids[i]);
 
                 var button = new Button(() =>
                 {

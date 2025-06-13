@@ -21,9 +21,7 @@ namespace SceneHop.Editor
 
         #endregion
 
-        #region Member Fields
-
-        [SerializeField] List<SceneGroup> favoritesData = new List<SceneGroup>();
+        #region Member Fields        
 
         [SerializeField] private string currentPath = DEFAULT_PATH;
         public string CurrentPath 
@@ -51,6 +49,25 @@ namespace SceneHop.Editor
                 currentName = value; 
                 InternalOnUpdateValue(); 
             } 
+        }
+
+        #endregion
+
+        #region Bound Fields
+
+        [SerializeField] private int dropdownIndex = 0;
+        [CreateProperty]
+        public int DropdownIndex
+        {
+            get => this.dropdownIndex;
+            set
+            {
+                if (value == dropdownIndex)
+                    return;
+
+                dropdownIndex = value;
+                InternalOnUpdateValue();
+            }
         }
 
 
@@ -86,8 +103,7 @@ namespace SceneHop.Editor
         }
 
         #endregion
-
-
+        
         private void InternalOnUpdateValue()
         {
             Debug.Log("On Save Value");

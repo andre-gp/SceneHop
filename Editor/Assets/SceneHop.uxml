@@ -3,7 +3,7 @@
     <ui:VisualElement name="Root" style="flex-grow: 1;">
         <ui:Foldout text="Settings&#10;" name="foldout-settings" class="foldout" style="flex-shrink: 0; flex-grow: 1;">
             <ui:VisualElement style="flex-wrap: nowrap; flex-direction: column; flex-grow: 1;">
-                <ui:EnumField name="search-filter" class="dropdown" />
+                <ui:DropdownField name="search-filter" class="dropdown" />
                 <ui:TextField is-delayed="true" name="input-field" class="text-field" />
             </ui:VisualElement>
         </ui:Foldout>
