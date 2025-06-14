@@ -7,7 +7,7 @@ namespace SceneHop.Editor
 {
     public class NameSearch : SearchType
     {
-        public NameSearch(SceneOverlayData data) : base(data)
+        public NameSearch(SearchField searchField) : base(searchField)
         {
         }
 
@@ -15,8 +15,8 @@ namespace SceneHop.Editor
 
         public override string TextValue 
         { 
-            get => data.CurrentName; 
-            set => data.CurrentName = value; 
+            get => searchField.Data.CurrentName;
+            set => searchField.Data.CurrentName = value; 
         }
 
         public override string[] RetrieveGuids()
@@ -25,11 +25,11 @@ namespace SceneHop.Editor
             return AssetDatabase.FindAssets(TextValue + " t:scene", new string[] { "Assets/" });
         }
 
-        public override void InitSearch(TextField textField)
+        public override void InitSearch()
         {
-            textField.style.display = DisplayStyle.Flex;
-            textField.textEdition.placeholder = "SampleScene";
-            textField.value = TextValue;
+            searchField.InputField.style.display = DisplayStyle.Flex;
+            searchField.InputField.textEdition.placeholder = "SampleScene";
+            searchField.InputField.value = TextValue;
         }
     }
 }

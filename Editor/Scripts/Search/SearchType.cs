@@ -5,11 +5,11 @@ namespace SceneHop.Editor
 {
     public abstract class SearchType
     {
-        protected SceneOverlayData data;
+        protected SearchField searchField;
 
-        public SearchType(SceneOverlayData data)
+        public SearchType(SearchField data)
         {
-            this.data = data;
+            this.searchField = data;
         }
 
         public abstract string Label { get; }
@@ -20,6 +20,6 @@ namespace SceneHop.Editor
 
         
 
-        public abstract void InitSearch(TextField textField);
+        public abstract void InitSearch();
     }
 }

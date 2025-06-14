@@ -7,7 +7,7 @@ namespace SceneHop.Editor
 {
     public class PathSearch : SearchType
     {
-        public PathSearch(SceneOverlayData data) : base(data)
+        public PathSearch(SearchField searchField) : base(searchField)
         {
         }
 
@@ -15,13 +15,13 @@ namespace SceneHop.Editor
 
         public override string TextValue
         {
-            get => data.CurrentPath;
-            set => data.CurrentPath = value;
+            get => searchField.Data.CurrentPath;
+            set => searchField.Data.CurrentPath = value;
         }
 
         public override string[] RetrieveGuids()
         {
-            string[] paths = data.CurrentPath.Split(';');
+            string[] paths = searchField.Data.CurrentPath.Split(';');
 
             if (string.IsNullOrEmpty(paths[0]))
             {
@@ -31,11 +31,11 @@ namespace SceneHop.Editor
             return AssetDatabase.FindAssets("t:scene", paths);
         }
 
-        public override void InitSearch(TextField textField)
+        public override void InitSearch()
         {
-            textField.style.display = DisplayStyle.Flex;
-            textField.textEdition.placeholder = SceneOverlayData.DEFAULT_PATH;
-            textField.value = TextValue;
+            searchField.InputField.style.display = DisplayStyle.Flex;
+            searchField.InputField.textEdition.placeholder = SceneOverlayData.DEFAULT_PATH;
+            searchField.InputField.value = TextValue;
         }
     }
 }

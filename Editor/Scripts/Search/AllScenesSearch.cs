@@ -7,7 +7,7 @@ namespace SceneHop.Editor
 {
     public class AllScenesSearch : SearchType
     {
-        public AllScenesSearch(SceneOverlayData data) : base(data)
+        public AllScenesSearch(SearchField searchField) : base(searchField)
         {
         }
 
@@ -19,9 +19,9 @@ namespace SceneHop.Editor
             return AssetDatabase.FindAssets("t:scene", new string[] { "Assets/" });
         }
 
-        public override void InitSearch(TextField textField)
+        public override void InitSearch()
         {
-            textField.style.display = DisplayStyle.None;
+            
         }
 
     }

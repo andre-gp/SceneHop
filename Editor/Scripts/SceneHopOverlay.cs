@@ -138,7 +138,7 @@ namespace SceneHop.Editor
             {
                 btn.style.width = defaultBtnSize.x * scale;
                 btn.style.height = defaultBtnSize.y * scale;
-                btn.style.fontSize = 8 * (scale + 0.1f);
+                btn.style.fontSize = 9 * (scale + 0.1f);
             }
         }
 
