@@ -11,6 +11,8 @@ namespace SceneHop.Editor
     public class SearchField
     {
         #region Member Fields
+        public Action RefreshOverlay;
+
         private FavoriteScenesData favoriteScenes;
 
         private SceneOverlayData data = null;
@@ -22,13 +24,17 @@ namespace SceneHop.Editor
 
         #region Components
 
-        private DropdownField dropdown;
+        private VisualElement root;
+        public VisualElement Root => this.root;
+
+        private DropdownField searchTypeDropdown;
+        public DropdownField SearchTypeDropdown => this.searchTypeDropdown;
 
         private TextField inputField;
         public TextField InputField => this.inputField;
 
-        private VisualElement favoritesToolbar;
-        public VisualElement FavoritesToolbar => this.favoritesToolbar;
+        private FavoriteScenesToolbar favoritesToolbar;
+        public FavoriteScenesToolbar FavoritesToolbar => this.favoritesToolbar;
 
         #endregion
 
@@ -42,43 +48,48 @@ namespace SceneHop.Editor
             searches = new List<SearchType>() { new PathSearch(this), new NameSearch(this), new AllScenesSearch(this) };
         }
 
-        public void InitSearchField(VisualElement root, Action onRefreshOverlay)
+        public void InitSearchField(VisualElement root, Action RefreshOverlay)
         {
-            favoritesToolbar = root.Q<VisualElement>("toolbar-favorites");
+            this.root = root;
+            this.RefreshOverlay = RefreshOverlay;
 
-            dropdown = root.Q<DropdownField>("search-filter");
+            favoritesToolbar = new FavoriteScenesToolbar(this);
+
+            searchTypeDropdown = root.Q<DropdownField>("search-filter");
             UpdateDropdownChoices();
 
             inputField = root.Q<TextField>("input-field");
 
             inputField.RegisterValueChangedCallback(callback =>
             {
-                searches[dropdown.index].TextValue = callback.newValue;
+                searches[searchTypeDropdown.index].TextValue = callback.newValue;
 
-                onRefreshOverlay();
+                RefreshOverlay();
             });
 
-            dropdown.RegisterValueChangedCallback(callback =>
+            searchTypeDropdown.RegisterValueChangedCallback(callback =>
             {
                 DeactivateAllOptions();
 
-                searches[dropdown.index].InitSearch();
+                searches[searchTypeDropdown.index].InitSearch();
 
-                onRefreshOverlay();
+                RefreshOverlay();
 
             });
 
-            data.DropdownIndex = Mathf.Clamp(data.DropdownIndex, 0, dropdown.choices.Count - 1);
-            dropdown.index = data.DropdownIndex;
+            DeactivateAllOptions();
+
+            data.DropdownIndex = Mathf.Clamp(data.DropdownIndex, 0, searchTypeDropdown.choices.Count - 1);
+            searchTypeDropdown.index = data.DropdownIndex;
 
 
-            dropdown.SetBinding(nameof(dropdown.index), new DataBinding()
+            searchTypeDropdown.SetBinding(nameof(searchTypeDropdown.index), new DataBinding()
             {
                 bindingMode = BindingMode.TwoWay,
                 dataSourcePath = PropertyPath.FromName(nameof(data.DropdownIndex))
             });
 
-            searches[dropdown.index].InitSearch();
+            searches[searchTypeDropdown.index].InitSearch();
 
             var button = root.Q<Button>("button-add");
             button.clickable.clicked += () =>
@@ -88,7 +99,7 @@ namespace SceneHop.Editor
                     searches.Add(new FavoriteScenesSearch(this, favoriteScenes.AddNewSceneGroup()));
                     UpdateDropdownChoices();
 
-                    dropdown.index = searches.Count - 1;
+                    searchTypeDropdown.index = searches.Count - 1;
                 }
             };
         }
@@ -97,17 +108,17 @@ namespace SceneHop.Editor
         {
             InputField.style.display = DisplayStyle.None;
 
-            favoritesToolbar.style.display = DisplayStyle.None;
+            favoritesToolbar.EnableToolbar(false);
         }
 
         public void UpdateDropdownChoices()
         {
-            dropdown.choices = searches.Select(x => x.Label).ToList();
+            searchTypeDropdown.choices = searches.Select(x => x.Label).ToList();
         }
 
         public string[] RetrieveGuids()
-        {
-            return searches[dropdown.index].RetrieveGuids();
+        {                       
+            return searches[searchTypeDropdown.index].RetrieveGuids();
         }
         
 

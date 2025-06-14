@@ -105,8 +105,7 @@ namespace SceneHop.Editor
         #endregion
         
         private void InternalOnUpdateValue()
-        {
-            Debug.Log("On Save Value");
+        {            
             OnUpdateValue?.Invoke(this);            
         }
     }

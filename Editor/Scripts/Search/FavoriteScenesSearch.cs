@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -21,18 +22,30 @@ namespace SceneHop.Editor
             {
                 this.sceneGroup.GroupName = value;
 
+                int previousIndex = searchField.SearchTypeDropdown.index;
                 searchField.UpdateDropdownChoices();
+                searchField.SearchTypeDropdown.index = previousIndex;
             } 
         }
 
         public override void InitSearch()
         {
-            searchField.FavoritesToolbar.style.display = DisplayStyle.Flex;
+            searchField.FavoritesToolbar.EnableToolbar(true);
+
+            searchField.InputField.textEdition.placeholder = "Group Name";
+            searchField.InputField.value = TextValue;
         }
 
         public override string[] RetrieveGuids()
         {
-            return new string[] { };
+            if (searchField.FavoritesToolbar.IsEditing)
+            {
+                return AssetDatabase.FindAssets("t:scene", new string[] { "Assets/" });
+            }
+            else
+            {
+                return new string[] { };
+            }
         }
     }
 }
