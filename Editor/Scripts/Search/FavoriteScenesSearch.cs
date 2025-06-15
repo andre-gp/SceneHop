@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -6,7 +7,10 @@ namespace SceneHop.Editor
 {
     public class FavoriteScenesSearch : SearchType
     {
-        SceneGroup sceneGroup;
+        private SceneButton[] scenes;
+
+        private SceneGroup sceneGroup;
+        public SceneGroup SceneGroup => this.sceneGroup;
 
         public FavoriteScenesSearch(SearchField searchField, SceneGroup sceneGroup) : base(searchField)
         {
@@ -27,6 +31,19 @@ namespace SceneHop.Editor
                 searchField.SearchTypeDropdown.index = previousIndex;
             } 
         }
+        public override SceneButton[] InstantiateButtons(VisualElement root)
+        {
+            if (searchField.FavoritesToolbar.IsEditing)
+            {
+                var guids = AssetDatabase.FindAssets("t:scene", new string[] { "Assets/" });
+
+                return guids.Select(x => new FavoriteSceneButton(root, x, sceneGroup, searchField.FavoritesToolbar)).ToArray();
+            }
+            else
+            {
+                return SceneGroup.Guids.Select(x => new SceneButton(root, x)).ToArray();
+            }
+        }
 
         public override void InitSearch()
         {
@@ -34,18 +51,6 @@ namespace SceneHop.Editor
 
             searchField.InputField.textEdition.placeholder = "Group Name";
             searchField.InputField.value = TextValue;
-        }
-
-        public override string[] RetrieveGuids()
-        {
-            if (searchField.FavoritesToolbar.IsEditing)
-            {
-                return AssetDatabase.FindAssets("t:scene", new string[] { "Assets/" });
-            }
-            else
-            {
-                return new string[] { };
-            }
         }
     }
 }

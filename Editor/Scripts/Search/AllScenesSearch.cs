@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,10 +15,13 @@ namespace SceneHop.Editor
         public override string Label => "All Scenes";
         public override string TextValue { get => ""; set { } }
 
-        public override string[] RetrieveGuids()
+        public override SceneButton[] InstantiateButtons(VisualElement root)
         {
-            return AssetDatabase.FindAssets("t:scene", new string[] { "Assets/" });
+            var guids = AssetDatabase.FindAssets("t:scene", new string[] { "Assets/" });
+
+            return guids.Select(x => new SceneButton(root, x)).ToArray();
         }
+
 
         public override void InitSearch()
         {

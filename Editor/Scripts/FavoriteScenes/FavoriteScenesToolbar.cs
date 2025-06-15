@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -6,6 +7,14 @@ namespace SceneHop.Editor
 {
     public class FavoriteScenesToolbar
     {
+        #region Callbacks
+
+        public Action<bool> OnEnableEditing;
+
+        public Action OnSave;
+
+        #endregion
+
         #region Member Fields
         private bool isEditing = false;
         public bool IsEditing => this.isEditing;
@@ -58,6 +67,8 @@ namespace SceneHop.Editor
             searchField.InputField.style.display = activate ? DisplayStyle.Flex : DisplayStyle.None;
 
             searchField.RefreshOverlay();
+
+            OnEnableEditing?.Invoke(activate);
         }
 
         private void EditFavorites()
@@ -67,6 +78,8 @@ namespace SceneHop.Editor
 
         private void SaveFavorites()
         {
+            OnSave?.Invoke();
+
             ActivateEditMode(false);
         }
 

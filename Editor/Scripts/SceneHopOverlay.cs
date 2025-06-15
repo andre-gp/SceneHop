@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -11,7 +12,7 @@ using UnityEngine.UIElements;
 namespace SceneHop.Editor
 {
     [Icon(ASSETS_PATH + "SceneHopIcon.png")]
-    [Overlay(typeof(EditorWindow), "", minWidth = 173, maxWidth = 9999, minHeight = 160, maxHeight = 9999)]
+    [Overlay(typeof(EditorWindow), "", minWidth = 155, maxWidth = 9999, minHeight = 100, maxHeight = 9999)]
     public class SceneHopOverlay : Overlay
     {
         #region Default Values
@@ -32,8 +33,6 @@ namespace SceneHop.Editor
 
         private SearchField searchField;
 
-        private ScenesGrid scenesGrid;
-
         private string savePath;
 
         #endregion
@@ -47,7 +46,9 @@ namespace SceneHop.Editor
             searchField = new SearchField(data);
             styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS_PATH);
             mainWindow = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneHop.uxml");
-            buttonAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneButton.uxml");           
+            buttonAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneButton.uxml");
+
+
         }
         private void LoadData()
         {
@@ -77,14 +78,14 @@ namespace SceneHop.Editor
         {
             base.OnCreated();
 
-            EditorApplication.projectChanged += RefreshOverlay;
+            EditorApplication.projectChanged += searchField.RefreshOverlay;
         }
 
         public override void OnWillBeDestroyed()
         {
             base.OnWillBeDestroyed();
 
-            EditorApplication.projectChanged -= RefreshOverlay;
+            EditorApplication.projectChanged -= searchField.RefreshOverlay;
         }
 
         public override VisualElement CreatePanelContent()
@@ -97,8 +98,6 @@ namespace SceneHop.Editor
             root.styleSheets.Add(styleSheet);
 
             CreateConfigurations(root);
-
-            scenesGrid = new ScenesGrid(root, data, searchField.RetrieveGuids);
 
             return root;
         }
@@ -116,14 +115,23 @@ namespace SceneHop.Editor
                 dataSourcePath = PropertyPath.FromName(nameof(this.data.FoldoutState))
             });
 
-            
+            searchField.InitSearchField(root);
 
-            searchField.InitSearchField(root, () => { RefreshOverlay(); });
+            searchField.FavoritesToolbar.OnEnableEditing += OnEnableEditing;
         }
 
-        private void RefreshOverlay()
+        private void OnEnableEditing(bool isEditing)
         {
-            scenesGrid.RefreshGrid();
+            if (isEditing)
+            {
+                if (size.x < 180)
+                {
+                    size = new Vector2(180, size.y);
+
+                    collapsed = false;
+
+                }                
+            }
         }
 
         #endregion

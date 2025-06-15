@@ -10,8 +10,12 @@ namespace SceneHop.Editor
 {
     public class SearchField
     {
+        #region Default Values
+
+        #endregion
+
         #region Member Fields
-        public Action RefreshOverlay;
+        public SearchType CurrentSearchType => searches[searchTypeDropdown.index];
 
         private FavoriteScenesData favoriteScenes;
 
@@ -19,6 +23,9 @@ namespace SceneHop.Editor
         public SceneOverlayData Data => this.data;
 
         private List<SearchType> searches;
+
+        ScenesGrid scenesGrid;
+        public ScenesGrid ScenesGrid => scenesGrid;
 
         #endregion
 
@@ -48,12 +55,14 @@ namespace SceneHop.Editor
             searches = new List<SearchType>() { new PathSearch(this), new NameSearch(this), new AllScenesSearch(this) };
         }
 
-        public void InitSearchField(VisualElement root, Action RefreshOverlay)
+        public void InitSearchField(VisualElement root)
         {
+            scenesGrid = new ScenesGrid(root, data);
+
             this.root = root;
-            this.RefreshOverlay = RefreshOverlay;
 
             favoritesToolbar = new FavoriteScenesToolbar(this);
+            favoritesToolbar.OnSave += OnSaveFavorites;
 
             searchTypeDropdown = root.Q<DropdownField>("search-filter");
             UpdateDropdownChoices();
@@ -62,7 +71,7 @@ namespace SceneHop.Editor
 
             inputField.RegisterValueChangedCallback(callback =>
             {
-                searches[searchTypeDropdown.index].TextValue = callback.newValue;
+                CurrentSearchType.TextValue = callback.newValue;
 
                 RefreshOverlay();
             });
@@ -71,7 +80,7 @@ namespace SceneHop.Editor
             {
                 DeactivateAllOptions();
 
-                searches[searchTypeDropdown.index].InitSearch();
+                CurrentSearchType.InitSearch();
 
                 RefreshOverlay();
 
@@ -104,11 +113,18 @@ namespace SceneHop.Editor
             };
         }
 
-        private void DeactivateAllOptions()
+        private void OnSaveFavorites()
         {
-            InputField.style.display = DisplayStyle.None;
+            var favoriteScenesGuid = ScenesGrid.InstantiatedButtons
+                .OfType<FavoriteSceneButton>()
+                .Where(x => x.IsFavorite)
+                .Select(x => x.Guid)
+                .ToList();
 
-            favoritesToolbar.EnableToolbar(false);
+            if(CurrentSearchType is FavoriteScenesSearch favoriteSearch)
+            {
+                favoriteSearch.SceneGroup.UpdateGuids(favoriteScenesGuid);
+            }
         }
 
         public void UpdateDropdownChoices()
@@ -116,11 +132,22 @@ namespace SceneHop.Editor
             searchTypeDropdown.choices = searches.Select(x => x.Label).ToList();
         }
 
-        public string[] RetrieveGuids()
-        {                       
-            return searches[searchTypeDropdown.index].RetrieveGuids();
+        public void RefreshOverlay()
+        {
+            scenesGrid.RefreshGrid(CurrentSearchType);
         }
-        
+
+
+        #endregion
+
+        #region Private Methods
+
+        private void DeactivateAllOptions()
+        {
+            InputField.style.display = DisplayStyle.None;
+
+            favoritesToolbar.EnableToolbar(false);
+        }
 
         #endregion
     }

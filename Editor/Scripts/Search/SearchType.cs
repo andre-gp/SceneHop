@@ -16,7 +16,7 @@ namespace SceneHop.Editor
 
         public abstract string TextValue { get; set; }
 
-        public abstract string[] RetrieveGuids();
+        public abstract SceneButton[] InstantiateButtons(VisualElement root);
 
         
 

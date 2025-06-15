@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,10 +20,11 @@ namespace SceneHop.Editor
             set => searchField.Data.CurrentName = value; 
         }
 
-        public override string[] RetrieveGuids()
+        public override SceneButton[] InstantiateButtons(VisualElement root)
         {
+            var guids = AssetDatabase.FindAssets(TextValue + " t:scene", new string[] { "Assets/" });
 
-            return AssetDatabase.FindAssets(TextValue + " t:scene", new string[] { "Assets/" });
+            return guids.Select(x => new SceneButton(root, x)).ToArray();
         }
 
         public override void InitSearch()
@@ -31,5 +33,6 @@ namespace SceneHop.Editor
             searchField.InputField.textEdition.placeholder = "SampleScene";
             searchField.InputField.value = TextValue;
         }
+
     }
 }

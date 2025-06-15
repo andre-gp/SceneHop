@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,8 +19,7 @@ namespace SceneHop.Editor
             get => searchField.Data.CurrentPath;
             set => searchField.Data.CurrentPath = value;
         }
-
-        public override string[] RetrieveGuids()
+        public override SceneButton[] InstantiateButtons(VisualElement root)
         {
             string[] paths = searchField.Data.CurrentPath.Split(';');
 
@@ -28,7 +28,9 @@ namespace SceneHop.Editor
                 paths[0] = SceneOverlayData.DEFAULT_PATH;
             }
 
-            return AssetDatabase.FindAssets("t:scene", paths);
+            var guids = AssetDatabase.FindAssets("t:scene", paths);
+
+            return guids.Select(x => new SceneButton(root, x)).ToArray();
         }
 
         public override void InitSearch()
@@ -37,5 +39,6 @@ namespace SceneHop.Editor
             searchField.InputField.textEdition.placeholder = SceneOverlayData.DEFAULT_PATH;
             searchField.InputField.value = TextValue;
         }
+
     }
 }

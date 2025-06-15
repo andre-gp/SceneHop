@@ -63,3 +63,8 @@
     height: 16px;
     -unity-text-align: middle-center;
 }
+
+.favorite-button{
+    border-color: rgb(255, 238, 84);
+    color: rgb(255, 238, 84);
+}
