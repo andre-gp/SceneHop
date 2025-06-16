@@ -29,6 +29,7 @@ namespace SceneHop.Editor
                 int previousIndex = searchField.SearchTypeDropdown.index;
                 searchField.UpdateDropdownChoices();
                 searchField.SearchTypeDropdown.index = previousIndex;
+                searchField.SaveFavoritesDataOnDisk();
             } 
         }
         public override SceneButton[] InstantiateButtons(VisualElement root)

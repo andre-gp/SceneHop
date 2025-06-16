@@ -10,6 +10,7 @@ namespace SceneHop.Editor
     public class FavoriteScenesData
     {
         [SerializeField] List<SceneGroup> favoritesData = new List<SceneGroup>();
+        public List<SceneGroup> SceneGroups => this.favoritesData;
 
         public SceneGroup AddNewSceneGroup()
         {

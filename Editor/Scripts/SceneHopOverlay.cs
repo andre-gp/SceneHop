@@ -47,9 +47,8 @@ namespace SceneHop.Editor
             styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS_PATH);
             mainWindow = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneHop.uxml");
             buttonAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneButton.uxml");
-
-
         }
+
         private void LoadData()
         {
             if (File.Exists(savePath))
@@ -66,11 +65,13 @@ namespace SceneHop.Editor
                 SaveData();
             };
         }
+
         private void SaveData()
         {
             new FileInfo(savePath).Directory.Create();
             File.WriteAllText(savePath, JsonUtility.ToJson(data));
         }
+
         #endregion
 
         #region Public Methods
@@ -128,7 +129,7 @@ namespace SceneHop.Editor
                 {
                     size = new Vector2(180, size.y);
 
-                    collapsed = false;
+                    
 
                 }                
             }

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Unity.Properties;
 using UnityEditor;
+using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -27,6 +29,8 @@ namespace SceneHop.Editor
         ScenesGrid scenesGrid;
         public ScenesGrid ScenesGrid => scenesGrid;
 
+        private string favoriteScenesSavePath;
+
         #endregion
 
         #region Components
@@ -48,11 +52,16 @@ namespace SceneHop.Editor
         #region Public Methods
         public SearchField(SceneOverlayData data)
         {
-            favoriteScenes = new FavoriteScenesData();
+            LoadFavorites();
 
             this.data = data;
 
             searches = new List<SearchType>() { new PathSearch(this), new NameSearch(this), new AllScenesSearch(this) };
+
+            foreach (var sceneGroup in this.favoriteScenes.SceneGroups)
+            {
+                searches.Add(new FavoriteScenesSearch(this, sceneGroup));
+            }
         }
 
         public void InitSearchField(VisualElement root)
@@ -109,8 +118,24 @@ namespace SceneHop.Editor
                     UpdateDropdownChoices();
 
                     searchTypeDropdown.index = searches.Count - 1;
+
+                    SaveFavoritesDataOnDisk();
                 }
             };
+        }
+
+        private void LoadFavorites()
+        {
+            favoriteScenesSavePath = Application.dataPath + "/../Library/SceneHop/favorites.json";
+
+            if (File.Exists(favoriteScenesSavePath))
+            {
+                favoriteScenes = JsonUtility.FromJson<FavoriteScenesData>(File.ReadAllText(favoriteScenesSavePath));
+            }
+            else
+            {
+                favoriteScenes = new FavoriteScenesData();
+            }
         }
 
         private void OnSaveFavorites()
@@ -121,10 +146,18 @@ namespace SceneHop.Editor
                 .Select(x => x.Guid)
                 .ToList();
 
-            if(CurrentSearchType is FavoriteScenesSearch favoriteSearch)
+            if (CurrentSearchType is FavoriteScenesSearch favoriteSearch)
             {
                 favoriteSearch.SceneGroup.UpdateGuids(favoriteScenesGuid);
             }
+
+            SaveFavoritesDataOnDisk();
+        }
+
+        public void SaveFavoritesDataOnDisk()
+        {
+            new FileInfo(favoriteScenesSavePath).Directory.Create();
+            File.WriteAllText(favoriteScenesSavePath, JsonUtility.ToJson(favoriteScenes));
         }
 
         public void UpdateDropdownChoices()
