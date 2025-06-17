@@ -117,22 +117,6 @@ namespace SceneHop.Editor
             });
 
             searchField.InitSearchField(root);
-
-            searchField.FavoritesToolbar.OnEnableEditing += OnEnableEditing;
-        }
-
-        private void OnEnableEditing(bool isEditing)
-        {
-            if (isEditing)
-            {
-                if (size.x < 180)
-                {
-                    size = new Vector2(180, size.y);
-
-                    
-
-                }                
-            }
         }
 
         #endregion
