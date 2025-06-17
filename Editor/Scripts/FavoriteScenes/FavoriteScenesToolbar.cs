@@ -1,6 +1,4 @@
 using System;
-using System.Linq;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace SceneHop.Editor
@@ -12,6 +10,8 @@ namespace SceneHop.Editor
         public Action<bool> OnEnableEditing;
 
         public Action OnSave;
+
+        public Action OnDelete;
 
         #endregion
 
@@ -42,8 +42,8 @@ namespace SceneHop.Editor
             saveButton = root.Q<Button>("button-favorites-save");
             saveButton.clickable.clicked += SaveFavorites;
 
-            cancelButton = root.Q<Button>("button-favorites-cancel");
-            cancelButton.clickable.clicked += CancelFavorites;
+            cancelButton = root.Q<Button>("button-favorites-delete");
+            cancelButton.clickable.clicked += DeleteFavoriteGroup;
         }
 
         #region Public Methods
@@ -83,9 +83,9 @@ namespace SceneHop.Editor
             ActivateEditMode(false);
         }
 
-        private void CancelFavorites()
+        private void DeleteFavoriteGroup()
         {
-            ActivateEditMode(false);
+            OnDelete?.Invoke();
         }
         #endregion
 

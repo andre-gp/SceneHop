@@ -72,6 +72,7 @@ namespace SceneHop.Editor
 
             favoritesToolbar = new FavoriteScenesToolbar(this);
             favoritesToolbar.OnSave += OnSaveFavorites;
+            favoritesToolbar.OnDelete += OnDeleteFavorites;
 
             searchTypeDropdown = root.Q<DropdownField>("search-filter");
             UpdateDropdownChoices();
@@ -152,6 +153,29 @@ namespace SceneHop.Editor
             }
 
             SaveFavoritesDataOnDisk();
+        }
+
+        private void OnDeleteFavorites()
+        {
+            if(CurrentSearchType is FavoriteScenesSearch favoriteSearch)
+            {
+                if (EditorUtility.DisplayDialog("Delete this group?",
+                    $"Are you sure you want to delete '{favoriteSearch.SceneGroup.GroupName}'",
+                    "Delete",
+                    "Cancel"))
+                {
+                    favoriteScenes.SceneGroups.Remove(favoriteSearch.SceneGroup);
+                    searches.Remove(favoriteSearch);
+
+                    SaveFavoritesDataOnDisk();
+
+                    UpdateDropdownChoices();
+
+                    searchTypeDropdown.index = 0;
+                }
+
+                    
+            }
         }
 
         public void SaveFavoritesDataOnDisk()
