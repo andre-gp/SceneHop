@@ -101,6 +101,9 @@ namespace SceneHop.Editor
             data.DropdownIndex = Mathf.Clamp(data.DropdownIndex, 0, searchTypeDropdown.choices.Count - 1);
             searchTypeDropdown.index = data.DropdownIndex;
 
+            if (data.DropdownIndex == 0)
+                RefreshOverlay(); // Force refresh overlay.
+
 
             searchTypeDropdown.SetBinding(nameof(searchTypeDropdown.index), new DataBinding()
             {
