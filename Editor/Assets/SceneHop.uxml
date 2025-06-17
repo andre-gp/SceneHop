@@ -1,12 +1,12 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/SceneHop.uss?fileID=7433441132597879392&amp;guid=7a9758558ff76894cbba79b28d099527&amp;type=3#SceneHop" />
     <ui:VisualElement name="Root" style="flex-grow: 1;">
-        <ui:Foldout text="Settings&#10;" name="foldout-settings" class="foldout" style="flex-shrink: 0; flex-grow: 1; padding-bottom: 2px; padding-top: 0;">
+        <ui:Foldout text="Settings&#10;" name="foldout-settings" class="foldout" style="flex-shrink: 0; flex-grow: 1; padding-bottom: 2px; padding-top: 0; font-size: 12px;">
             <ui:VisualElement style="flex-wrap: nowrap; flex-direction: column; flex-grow: 1; justify-content: space-around; padding-bottom: 5px;">
                 <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: flex-start; align-items: center;">
                     <ui:VisualElement style="flex-grow: 1; flex-direction: row; align-items: center; max-width: 100%; min-width: 0;">
                         <ui:Button icon-image="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/AddIcon.png?fileID=2800000&amp;guid=3a42e8e652807bb4b8e61710f9752fc0&amp;type=3#AddIcon" name="button-add" tooltip="Add Favorite Group" class="small-button" />
-                        <ui:DropdownField name="search-filter" class="dropdown" style="max-width: 100%; min-width: 0; flex-shrink: 1;" />
+                        <ui:DropdownField name="search-filter" class="dropdown" style="max-width: 100%; min-width: 0; flex-shrink: 1; align-items: center;" />
                     </ui:VisualElement>
                     <ui:VisualElement name="toolbar-favorites" style="flex-direction: row; justify-content: flex-end; align-content: flex-end; align-items: center; align-self: center; max-width: none; flex-shrink: 0;">
                         <ui:Button icon-image="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/EditIcon.png?fileID=2800000&amp;guid=cea36903b7b57be46ae8cb7254d93daa&amp;type=3#EditIcon" tooltip="Edit" name="button-favorites-edit" class="small-button" style="display: flex;" />
