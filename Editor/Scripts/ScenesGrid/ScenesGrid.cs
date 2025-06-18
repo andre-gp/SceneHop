@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Unity.Properties;
 using UnityEngine;
@@ -59,7 +58,7 @@ namespace SceneHop.Editor
 
             if (instantiatedButtons.Count <= 0)
             {
-                gridRoot.Add(new Label("Could not find any scenes!"));
+                searchType.AddNoSceneElements(gridRoot);
             }
 
             UpdateButtonsScale(data.ButtonScale);

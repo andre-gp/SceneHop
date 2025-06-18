@@ -1,7 +1,5 @@
 using System.Linq;
 using UnityEditor;
-using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 namespace SceneHop.Editor

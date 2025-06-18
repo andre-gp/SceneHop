@@ -71,7 +71,7 @@ namespace SceneHop.Editor
             OnEnableEditing?.Invoke(activate);
         }
 
-        private void EditFavorites()
+        public void EditFavorites()
         {
             ActivateEditMode(true);
         }

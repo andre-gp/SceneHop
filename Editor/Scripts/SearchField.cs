@@ -167,6 +167,7 @@ namespace SceneHop.Editor
                     "Delete",
                     "Cancel"))
                 {
+                    int previousIndex = searchTypeDropdown.index;
                     favoriteScenes.SceneGroups.Remove(favoriteSearch.SceneGroup);
                     searches.Remove(favoriteSearch);
 
@@ -174,7 +175,7 @@ namespace SceneHop.Editor
 
                     UpdateDropdownChoices();
 
-                    searchTypeDropdown.index = 0;
+                    searchTypeDropdown.index = Mathf.Clamp(previousIndex + 1, 0, searches.Count - 1);
                 }
 
                     

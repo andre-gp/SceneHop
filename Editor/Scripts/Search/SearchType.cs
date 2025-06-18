@@ -1,4 +1,3 @@
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace SceneHop.Editor
@@ -18,8 +17,11 @@ namespace SceneHop.Editor
 
         public abstract SceneButton[] InstantiateButtons(VisualElement root);
 
-        
-
         public abstract void InitSearch();
+
+        public virtual void AddNoSceneElements(VisualElement root)
+        {
+            root.Add(new Label("Could not find any scenes!"));
+        }
     }
 }
