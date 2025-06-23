@@ -16,6 +16,7 @@ namespace SceneHop.Editor
         private const string ASSETS_PATH = "Packages/com.gaton.editor.scenehop/Editor/Assets/";
 
         private const string USS_PATH = ASSETS_PATH + "SceneHop.uss";
+        private const string UXML_PATH = ASSETS_PATH + "SceneHop.uxml";
 
         #endregion
 
@@ -23,7 +24,6 @@ namespace SceneHop.Editor
         private SceneOverlayData data;
 
         private VisualTreeAsset mainWindow;
-        private VisualTreeAsset buttonAsset;
 
         private StyleSheet styleSheet;
 
@@ -41,8 +41,12 @@ namespace SceneHop.Editor
             LoadData();
             searchField = new SearchField(data);
             styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS_PATH);
-            mainWindow = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneHop.uxml");
-            buttonAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(ASSETS_PATH + "SceneButton.uxml");
+            mainWindow = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML_PATH);
+            
+            if(styleSheet == null || mainWindow == null)
+            {
+                Debug.LogWarning("Could not load assets");
+            }
         }
 
         private void LoadData()
