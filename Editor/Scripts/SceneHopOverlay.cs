@@ -24,13 +24,15 @@ namespace SceneHop.Editor
         #region Fields
         private SceneOverlayData data;
 
-        private VisualTreeAsset mainWindow;
+        private VisualTreeAsset mainWindowTemplate;
 
         private StyleSheet styleSheet;
 
         private SearchField searchField;
 
         private string savePath;
+
+        private VisualElement root;
 
         private bool hasInitializedOverlay;
 
@@ -51,7 +53,7 @@ namespace SceneHop.Editor
         private void LoadAssets()
         {
             styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS_PATH);
-            mainWindow = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML_PATH);
+            mainWindowTemplate = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML_PATH);
         }
 
         private void LoadData()
@@ -101,42 +103,55 @@ namespace SceneHop.Editor
                 searchField.RefreshOverlay();
             }
             else
-            {
+            {                
                 LoadAssets();
 
-                CreatePanelContent();
+                root.Clear();
+
+                root.Add(InternalGetPanelContent());
             }
         }
 
         public override VisualElement CreatePanelContent()
         {
-            if(styleSheet == null || mainWindow == null)
+            root = new VisualElement();
+
+            root.Add(InternalGetPanelContent());
+
+            return root;
+        }
+
+        private VisualElement InternalGetPanelContent()
+        {
+            if (styleSheet == null || mainWindowTemplate == null)
             {
                 // When the package is first imported, these assets might not be imported, so 
                 // the creation will be finished after the project refresh (when the package finish importing).
 
                 WaitAssetLoad();
 
-                return new VisualElement();
+                root.Add(new Label("Loading ..."));
+
+                return root;
             }
 
             hasInitializedOverlay = true;
 
-            var root = mainWindow.CloneTree();
-            root.dataSource = this.data;
+            var mainWindow = mainWindowTemplate.CloneTree();
+            mainWindow.dataSource = this.data;
 
             // The uxml already loads the style sheet, but to guarantee that it is going to be
             // linked, I am still adding it again here.
-            root.styleSheets.Add(styleSheet);
+            mainWindow.styleSheets.Add(styleSheet);
 
-            CreateConfigurations(root);
+            CreateConfigurations(mainWindow);
 
-            return root;
+            return mainWindow;
         }
 
         private async void WaitAssetLoad()
         {
-            Debug.Log("Starting Delay");
+            Debug.Log("Forcing Project Refresh");
 
             await Task.Delay(3000);
 
