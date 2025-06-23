@@ -125,9 +125,7 @@ namespace SceneHop.Editor
         {
             if (styleSheet == null || mainWindowTemplate == null)
             {
-                WaitAssetLoad();
-
-                return new Label("Loading ...");
+                return CreateReloadButton();
             }
 
             hasInitializedOverlay = true;
@@ -144,17 +142,23 @@ namespace SceneHop.Editor
             return mainWindow;
         }
 
-        /// <summary>
-        /// When the package is first imported, these assets might not be imported, 
-        /// so the creation will be finished after the project refresh (when the package finish importing).
-        /// </summary>
-        private async void WaitAssetLoad()
+        private VisualElement CreateReloadButton()
         {
-            await Task.Delay(1500);         
+            /// When the package is first imported, these assets may not be available yet,
+            /// so the UI is created after the project refresh.
+            /// A button was added to prevent recursive script reloads in case the assets
+            /// failed to be added to the project.
 
-            OnRefreshProject();
+            Button button = new Button();
 
-            AssetDatabase.Refresh();
+            button.text = "Initialize SceneHop";
+
+            button.clicked += () =>
+            {
+                EditorUtility.RequestScriptReload();
+            };
+
+            return button;
         }
 
         #endregion
