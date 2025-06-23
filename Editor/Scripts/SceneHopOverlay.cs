@@ -31,6 +31,8 @@ namespace SceneHop.Editor
 
         private string savePath;
 
+        private bool hasInitializedOverlay;
+
         #endregion
 
         #region Constructor
@@ -39,17 +41,16 @@ namespace SceneHop.Editor
             savePath = Application.dataPath + "/../Library/SceneHop/data.json";
 
             LoadData();
+
             searchField = new SearchField(data);
+
+            LoadAssets();
+        }
+
+        private void LoadAssets()
+        {
             styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS_PATH);
             mainWindow = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML_PATH);
-            
-            if(styleSheet == null || mainWindow == null)
-            {
-                AssetDatabase.Refresh();
-
-                styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS_PATH);
-                mainWindow = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML_PATH);
-            }
         }
 
         private void LoadData()
@@ -82,18 +83,39 @@ namespace SceneHop.Editor
         {
             base.OnCreated();
 
-            EditorApplication.projectChanged += searchField.RefreshOverlay;
+            EditorApplication.projectChanged += OnRefreshProject;
         }
 
         public override void OnWillBeDestroyed()
         {
             base.OnWillBeDestroyed();
 
-            EditorApplication.projectChanged -= searchField.RefreshOverlay;
+            EditorApplication.projectChanged -= OnRefreshProject;
+        }
+
+        public void OnRefreshProject()
+        {
+            if (hasInitializedOverlay)
+            {
+                searchField.RefreshOverlay();
+            }
+            else
+            {
+                LoadAssets();
+
+                CreatePanelContent();
+            }
         }
 
         public override VisualElement CreatePanelContent()
         {
+            if(styleSheet == null || mainWindow == null)
+            {
+                return null;
+            }
+
+            hasInitializedOverlay = true;
+
             var root = mainWindow.CloneTree();
             root.dataSource = this.data;
 
