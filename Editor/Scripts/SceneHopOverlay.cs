@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 using Unity.Properties;
 using UnityEditor;
 using UnityEditor.Overlays;
@@ -113,7 +114,10 @@ namespace SceneHop.Editor
             {
                 // When the package is first imported, these assets might not be imported, so 
                 // the creation will be finished after the project refresh (when the package finish importing).
-                return null;
+
+                WaitAssetLoad();
+
+                return new VisualElement();
             }
 
             hasInitializedOverlay = true;
@@ -128,6 +132,17 @@ namespace SceneHop.Editor
             CreateConfigurations(root);
 
             return root;
+        }
+
+        private async void WaitAssetLoad()
+        {
+            Debug.Log("Starting Delay");
+
+            await Task.Delay(3000);
+
+            Debug.Log("Refreshing Project");
+
+            OnRefreshProject();
         }
 
         #endregion
