@@ -106,6 +106,9 @@ namespace SceneHop.Editor
             {                
                 LoadAssets();
 
+                if (root == null)
+                    return;
+
                 root.Clear();
 
                 root.Add(InternalGetPanelContent());
