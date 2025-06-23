@@ -125,9 +125,6 @@ namespace SceneHop.Editor
         {
             if (styleSheet == null || mainWindowTemplate == null)
             {
-                // When the package is first imported, these assets might not be imported, so 
-                // the creation will be finished after the project refresh (when the package finish importing).
-
                 WaitAssetLoad();
 
                 return new Label("Loading ...");
@@ -147,15 +144,17 @@ namespace SceneHop.Editor
             return mainWindow;
         }
 
+        /// <summary>
+        /// When the package is first imported, these assets might not be imported, 
+        /// so the creation will be finished after the project refresh (when the package finish importing).
+        /// </summary>
         private async void WaitAssetLoad()
         {
-            Debug.Log("Forcing Project Refresh");
-
-            await Task.Delay(3000);
-
-            Debug.Log("Refreshing Project");
+            await Task.Delay(1500);         
 
             OnRefreshProject();
+
+            AssetDatabase.Refresh();
         }
 
         #endregion
