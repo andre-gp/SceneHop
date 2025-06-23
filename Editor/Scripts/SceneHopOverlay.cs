@@ -45,7 +45,10 @@ namespace SceneHop.Editor
             
             if(styleSheet == null || mainWindow == null)
             {
-                Debug.LogWarning("Could not load assets");
+                AssetDatabase.Refresh();
+
+                styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS_PATH);
+                mainWindow = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML_PATH);
             }
         }
 
