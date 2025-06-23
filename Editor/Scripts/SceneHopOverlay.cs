@@ -113,8 +113,6 @@ namespace SceneHop.Editor
             {
                 // When the package is first imported, these assets might not be imported, so 
                 // the creation will be finished after the project refresh (when the package finish importing).
-
-                AssetDatabase.Refresh();
                 return null;
             }
 
