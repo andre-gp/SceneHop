@@ -130,9 +130,7 @@ namespace SceneHop.Editor
 
                 WaitAssetLoad();
 
-                root.Add(new Label("Loading ..."));
-
-                return root;
+                return new Label("Loading ...");
             }
 
             hasInitializedOverlay = true;
