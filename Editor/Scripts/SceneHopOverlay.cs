@@ -52,6 +52,9 @@ namespace SceneHop.Editor
 
         private void LoadAssets()
         {
+            if (styleSheet != null && mainWindowTemplate != null)
+                return;
+
             styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS_PATH);
             mainWindowTemplate = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML_PATH);
         }
