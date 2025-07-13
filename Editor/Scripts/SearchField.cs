@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Unity.Properties;
 using UnityEditor;
 using UnityEditor.Overlays;
@@ -30,6 +32,8 @@ namespace SceneHop.Editor
         public ScenesGrid ScenesGrid => scenesGrid;
 
         private string favoriteScenesSavePath;
+
+        private bool requestedRefresh = false;
 
         #endregion
 
@@ -101,10 +105,6 @@ namespace SceneHop.Editor
             data.DropdownIndex = Mathf.Clamp(data.DropdownIndex, 0, searchTypeDropdown.choices.Count - 1);
             searchTypeDropdown.index = data.DropdownIndex;
 
-            if (data.DropdownIndex == 0)
-                RefreshOverlay(); // Force refresh overlay.
-
-
             searchTypeDropdown.SetBinding(nameof(searchTypeDropdown.index), new DataBinding()
             {
                 bindingMode = BindingMode.TwoWay,
@@ -126,6 +126,8 @@ namespace SceneHop.Editor
                     SaveFavoritesDataOnDisk();
                 }
             };
+
+            RefreshOverlay();
         }
 
         private void LoadFavorites()
@@ -193,9 +195,27 @@ namespace SceneHop.Editor
             searchTypeDropdown.choices = searches.Select(x => x.Label).ToList();
         }
 
+        /// <summary>
+        /// Always refreshes next frame, to avoid executing duplicate calls.
+        /// </summary>
         public void RefreshOverlay()
         {
+            if (!requestedRefresh)
+            {
+                requestedRefresh = true;
+
+                // The continued execution is intended.
+                RefreshNextFrame();
+            }
+        }
+
+        private async Task RefreshNextFrame()
+        {
+            await Task.Delay(1);
+
             scenesGrid.RefreshGrid(CurrentSearchType);
+
+            requestedRefresh = false;
         }
 
 
