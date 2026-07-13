@@ -189,10 +189,14 @@ namespace SceneHop.Editor
 
                     UpdateDropdownChoices();
 
-                    searchTypeDropdown.index = Mathf.Clamp(previousIndex + 1, 0, searches.Count - 1);
-                }
+                    searchTypeDropdown.index = Mathf.Clamp(previousIndex, 0, searches.Count - 1);
 
-                    
+                    DeactivateAllOptions();
+
+                    CurrentSearchType.InitSearch();
+
+                    RefreshOverlay();
+                }
             }
         }
 

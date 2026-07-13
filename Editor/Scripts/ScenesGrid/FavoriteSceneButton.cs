@@ -6,6 +6,8 @@ namespace SceneHop.Editor
     {
         private SceneGroup sceneGroup;
 
+        private FavoriteScenesToolbar toolbar;
+
         private bool isEditing;
 
         private bool isFavorite;
@@ -13,6 +15,7 @@ namespace SceneHop.Editor
         public FavoriteSceneButton(VisualElement root, string guid, SceneGroup sceneGroup, FavoriteScenesToolbar toolbar) : base(root, guid)
         {
             this.sceneGroup = sceneGroup;
+            this.toolbar = toolbar;
 
             sceneGroup.OnModifyGroup += OnModifyGroup;
 
@@ -63,6 +66,11 @@ namespace SceneHop.Editor
             if (sceneGroup != null)
             {
                 sceneGroup.OnModifyGroup -= OnModifyGroup;
+            }
+
+            if (toolbar != null)
+            {
+                toolbar.OnEnableEditing -= SetEditing;
             }
         }
     }
