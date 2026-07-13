@@ -62,6 +62,12 @@ namespace SceneHop.Editor
 
         private void OpenScene()
         {
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                Debug.LogWarning("SceneHop: Cannot switch scenes while in Play Mode.");
+                return;
+            }
+
             // Re-resolve the path in case the scene was deleted or moved after this button was created.
             path = AssetDatabase.GUIDToAssetPath(guid);
 

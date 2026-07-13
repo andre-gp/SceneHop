@@ -101,6 +101,7 @@ namespace SceneHop.Editor
             base.OnCreated();
 
             EditorApplication.projectChanged += OnRefreshProject;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
         public override void OnWillBeDestroyed()
@@ -108,6 +109,12 @@ namespace SceneHop.Editor
             base.OnWillBeDestroyed();
 
             EditorApplication.projectChanged -= OnRefreshProject;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            searchField.ScenesGrid?.SetGridEnabled(!EditorApplication.isPlayingOrWillChangePlaymode);
         }
 
         public void OnRefreshProject()

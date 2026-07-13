@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Unity.Properties;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -22,7 +23,14 @@ namespace SceneHop.Editor
 
             gridRoot = root.Q<VisualElement>("grid-content");
 
+            SetGridEnabled(!EditorApplication.isPlayingOrWillChangePlaymode);
+
             InitScaleSlider(root);
+        }
+
+        public void SetGridEnabled(bool enabled)
+        {
+            gridRoot.SetEnabled(enabled);
         }
 
         private void InitScaleSlider(VisualElement root)
