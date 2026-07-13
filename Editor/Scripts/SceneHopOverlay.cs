@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Unity.Properties;
@@ -61,11 +62,21 @@ namespace SceneHop.Editor
 
         private void LoadData()
         {
-            if (File.Exists(savePath))
+            try
             {
-                data = JsonUtility.FromJson<SceneOverlayData>(File.ReadAllText(savePath));
+                if (File.Exists(savePath))
+                {
+                    data = JsonUtility.FromJson<SceneOverlayData>(File.ReadAllText(savePath));
+                }
             }
-            else
+            catch (Exception e)
+            {
+                File.Copy(savePath, savePath + ".bak", true);
+                Debug.LogWarning($"SceneHop: Failed to load '{savePath}'. Falling back to default settings. " +
+                    $"The previous file was backed up as 'data.json.bak'.\n{e.Message}");
+            }
+
+            if (data == null)
             {
                 data = new SceneOverlayData();
             }

@@ -134,14 +134,26 @@ namespace SceneHop.Editor
         {
             favoriteScenesSavePath = Application.dataPath + "/../Library/SceneHop/favorites.json";
 
-            if (File.Exists(favoriteScenesSavePath))
+            try
             {
-                favoriteScenes = JsonUtility.FromJson<FavoriteScenesData>(File.ReadAllText(favoriteScenesSavePath));
+                if (File.Exists(favoriteScenesSavePath))
+                {
+                    favoriteScenes = JsonUtility.FromJson<FavoriteScenesData>(File.ReadAllText(favoriteScenesSavePath));
+                }
             }
-            else
+            catch (Exception e)
+            {
+                File.Copy(favoriteScenesSavePath, favoriteScenesSavePath + ".bak", true);
+                Debug.LogWarning($"SceneHop: Failed to load '{favoriteScenesSavePath}'. Falling back to empty favorites. " +
+                    $"The previous file was backed up as 'favorites.json.bak'.\n{e.Message}");
+            }
+
+            if (favoriteScenes == null)
             {
                 favoriteScenes = new FavoriteScenesData();
             }
+
+            favoriteScenes.Normalize();
         }
 
         private void OnSaveFavorites()

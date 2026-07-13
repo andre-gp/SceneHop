@@ -30,6 +30,21 @@ namespace SceneHop.Editor
             favoritesData.Add(group);
             return group;
         }
+
+        public void Normalize()
+        {
+            if (favoritesData == null)
+            {
+                favoritesData = new List<SceneGroup>();
+            }
+
+            favoritesData.RemoveAll(group => group == null);
+
+            foreach (var group in favoritesData)
+            {
+                group.Normalize();
+            }
+        }
     }
 }
 
@@ -60,6 +75,23 @@ public class SceneGroup
     public void UpdateGuids(List<string> guids)
     {
         this.guids = guids;
+    }
+
+    public void Normalize()
+    {
+        if (groupName == null)
+        {
+            groupName = "Favorites";
+        }
+
+        if (guids == null)
+        {
+            guids = new List<string>();
+        }
+        else
+        {
+            guids.RemoveAll(guid => guid == null);
+        }
     }
 
     public bool Add(string guid)
