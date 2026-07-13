@@ -15,7 +15,18 @@ namespace SceneHop.Editor
         public SceneGroup AddNewSceneGroup()
         {
             var group = new SceneGroup($"Favorites {favoritesData.Count + 1}");
-            group.Guids.Add(AssetDatabase.AssetPathToGUID(SceneManager.GetActiveScene().path));
+
+            // An untitled/never-saved scene has an empty path, which would store an empty GUID.
+            string activeScenePath = SceneManager.GetActiveScene().path;
+            if (!string.IsNullOrEmpty(activeScenePath))
+            {
+                string guid = AssetDatabase.AssetPathToGUID(activeScenePath);
+                if (!string.IsNullOrEmpty(guid))
+                {
+                    group.Guids.Add(guid);
+                }
+            }
+
             favoritesData.Add(group);
             return group;
         }

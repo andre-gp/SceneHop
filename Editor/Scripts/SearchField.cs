@@ -213,9 +213,18 @@ namespace SceneHop.Editor
         {
             await Task.Delay(1);
 
-            scenesGrid.RefreshGrid(CurrentSearchType);
-
-            requestedRefresh = false;
+            try
+            {
+                scenesGrid?.RefreshGrid(CurrentSearchType);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+            finally
+            {
+                requestedRefresh = false;
+            }
         }
 
 

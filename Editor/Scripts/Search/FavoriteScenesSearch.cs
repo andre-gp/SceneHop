@@ -47,7 +47,9 @@ namespace SceneHop.Editor
             }
             else
             {
-                return SceneGroup.Guids.Select(x => new SceneButton(root, x)).ToArray();
+                return SceneGroup.Guids
+                    .Where(x => !string.IsNullOrEmpty(AssetDatabase.GUIDToAssetPath(x)))
+                    .Select(x => new SceneButton(root, x)).ToArray();
             }
         }
 

@@ -19,11 +19,21 @@ namespace SceneHop.Editor
         }
         public override SceneButton[] InstantiateButtons(VisualElement root)
         {
-            string[] paths = searchField.Data.CurrentPath.Split(';');
+            string currentPath = searchField.Data.CurrentPath;
 
-            if (string.IsNullOrEmpty(paths[0]))
+            if (string.IsNullOrEmpty(currentPath))
             {
-                paths[0] = SceneOverlayData.DEFAULT_PATH;
+                currentPath = SceneOverlayData.DEFAULT_PATH;
+            }
+
+            string[] paths = currentPath.Split(';')
+                .Select(x => x.Trim().TrimEnd('/'))
+                .Where(x => !string.IsNullOrEmpty(x) && AssetDatabase.IsValidFolder(x))
+                .ToArray();
+
+            if (paths.Length == 0)
+            {
+                return new SceneButton[0];
             }
 
             var guids = AssetDatabase.FindAssets("t:scene", paths);

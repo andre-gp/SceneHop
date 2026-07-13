@@ -2,6 +2,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace SceneHop.Editor
@@ -31,10 +32,7 @@ namespace SceneHop.Editor
             {
                 callback.menu.AppendAction("Load Scene", (x) =>
                 {
-                    if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
-                    {
-                        EditorSceneManager.OpenScene(path);
-                    }
+                    OpenScene();
                 });
 
                 callback.menu.AppendAction("Select Asset", (x) =>
@@ -59,6 +57,20 @@ namespace SceneHop.Editor
 
         protected virtual void OnClickButton()
         {
+            OpenScene();
+        }
+
+        private void OpenScene()
+        {
+            // Re-resolve the path in case the scene was deleted or moved after this button was created.
+            path = AssetDatabase.GUIDToAssetPath(guid);
+
+            if (string.IsNullOrEmpty(path))
+            {
+                Debug.LogWarning($"SceneHop: The scene '{button.text}' no longer exists.");
+                return;
+            }
+
             if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             {
                 EditorSceneManager.OpenScene(path);
