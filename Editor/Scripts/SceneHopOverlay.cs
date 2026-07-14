@@ -113,6 +113,7 @@ namespace SceneHop.Editor
             EditorApplication.projectChanged -= OnRefreshProject;
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             EditorSceneManager.sceneOpened -= OnSceneOpened;
+            EditorApplication.update -= RetryPanelContentWhenIdle;
         }
 
         private void OnSceneOpened(Scene scene, OpenSceneMode mode)
@@ -136,16 +137,21 @@ namespace SceneHop.Editor
                 searchField.RefreshOverlay();
             }
             else
-            {                
-                LoadAssets();
-
-                if (root == null)
-                    return;
-
-                root.Clear();
-
-                root.Add(InternalGetPanelContent());
+            {
+                RebuildPanelContent();
             }
+        }
+
+        private void RebuildPanelContent()
+        {
+            LoadAssets();
+
+            if (root == null)
+                return;
+
+            root.Clear();
+
+            root.Add(InternalGetPanelContent());
         }
 
         public override VisualElement CreatePanelContent()
@@ -161,7 +167,16 @@ namespace SceneHop.Editor
         {
             // While the asset database is refreshing (first import, package update),
             // the loaded uxml may be missing or still be the previous version's tree.
-            if (styleSheet == null || mainWindowTemplate == null || EditorApplication.isUpdating)
+            // Retry automatically once the editor is idle:
+            if (EditorApplication.isUpdating)
+            {
+                EditorApplication.update -= RetryPanelContentWhenIdle;
+                EditorApplication.update += RetryPanelContentWhenIdle;
+
+                return CreateReloadButton();
+            }
+
+            if (styleSheet == null || mainWindowTemplate == null)
             {
                 return CreateReloadButton();
             }
@@ -190,6 +205,19 @@ namespace SceneHop.Editor
             hasInitializedOverlay = true;
 
             return mainWindow;
+        }
+
+        private void RetryPanelContentWhenIdle()
+        {
+            if (EditorApplication.isUpdating || EditorApplication.isCompiling)
+                return;
+
+            EditorApplication.update -= RetryPanelContentWhenIdle;
+
+            if (!hasInitializedOverlay)
+            {
+                RebuildPanelContent();
+            }
         }
 
         private VisualElement CreateReloadButton()
