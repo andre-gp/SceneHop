@@ -9,7 +9,6 @@ namespace SceneHop.Editor
     public class ScenesGrid
     {
         private Vector2 defaultBtnSize = new Vector2(60, 40);
-        private Color favoriteSceneColor = new Color(0.9f, 0.9f, 0.4f);
 
         private VisualElement gridRoot;
         private SceneOverlayData data;

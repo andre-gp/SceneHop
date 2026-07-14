@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace SceneHop.Editor
@@ -52,12 +53,28 @@ namespace SceneHop.Editor
             button.text = btnName;
             button.AddToClassList("scene-button");
 
+            if (IsSceneLoaded())
+            {
+                button.AddToClassList("scene-button--current");
+            }
+
             // Icon shown only in compact list mode (min zoom)
             Image icon = new Image() { image = AssetDatabase.GetCachedIcon(path) };
             icon.AddToClassList("scene-button__icon");
             button.Add(icon);
 
             root.Add(button);
+        }
+
+        private bool IsSceneLoaded()
+        {
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                if (SceneManager.GetSceneAt(i).path == path)
+                    return true;
+            }
+
+            return false;
         }
 
         protected virtual void OnClickButton()

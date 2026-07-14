@@ -21,7 +21,9 @@ namespace SceneHop.Editor
 
         public virtual void AddNoSceneElements(VisualElement root)
         {
-            root.Add(new Label("Could not find any scenes!"));
+            Label label = new Label("Could not find any scenes!");
+            label.AddToClassList("empty-label");
+            root.Add(label);
         }
     }
 }

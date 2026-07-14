@@ -64,11 +64,7 @@ namespace SceneHop.Editor
         public override void AddNoSceneElements(VisualElement root)
         {
             Label label = new Label("Click the edit button to add some favorite scenes to this group!");
-            label.style.whiteSpace = WhiteSpace.Normal;
-            label.style.maxWidth = new StyleLength(Length.Percent(100));
-            label.style.flexGrow = 1; // Makes it expand within parent
-            label.style.flexShrink = 1;
-            label.style.flexBasis = 0;
+            label.AddToClassList("empty-label");
             root.Add(label);
         }
 

@@ -1,6 +1,6 @@
 {
   "name": "com.gaton.editor.scenehop",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "displayName": "SceneHop",
   "description": "SceneHop is a Unity Editor tool that lets you quickly switch between scenes using an in-editor overlay. You won't need to dig through the Project window every time you want to change scenes.",
   "unity": "2019.1",

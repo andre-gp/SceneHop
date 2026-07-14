@@ -2,6 +2,42 @@
     flex-direction: column;
     align-items: stretch;
     padding: 5px;
+    padding-bottom: 2px;
+    padding-top: 0;
+    font-size: 12px;
+    flex-shrink: 0;
+    flex-grow: 1;
+}
+
+.settings-container {
+    flex-wrap: nowrap;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-around;
+    padding-bottom: 5px;
+}
+
+.settings-row {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.dropdown-group {
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.toolbar-favorites {
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    align-self: center;
+    flex-shrink: 0;
 }
 
 .scene-button {
@@ -9,15 +45,25 @@
     height: 40px;
     font-size: 10px;
     white-space: normal;
-    padding-left: 1px;
-    padding-right: 1px;
+    overflow: hidden;
+    padding-left: 2px;
+    padding-right: 2px;
+    margin: 2px;
+    border-radius: 3px;
+    -unity-text-align: middle-center;
 }
 
-.search-button {
-    margin-top: 10px;
-    margin-right: 10px;
-    max-width: 100px;
-    background-color: rgb(26, 77, 26);
+.scene-button:hover {
+    background-color: var(--unity-colors-button-background-hover);
+}
+
+.scene-button:active {
+    background-color: var(--unity-colors-button-background-pressed);
+}
+
+.scene-button--current {
+    border-color: var(--unity-colors-highlight-background);
+    border-width: 1px;
 }
 
 .grid {
@@ -27,16 +73,19 @@
 }
 
 .dropdown {
-    max-width: 100px;
+    max-width: 100%;
+    min-width: 0;
+    flex-shrink: 1;
+    align-items: center;
 }
 
 .separator {
     height: 1px;
     min-height: 1px;
     max-height: 1px;
-    background-color: rgb(128, 128, 128);
-    margin-top: 5px;
-    margin-bottom: 5px;
+    background-color: var(--unity-colors-inspector_titlebar-border);
+    margin-top: 0;
+    margin-bottom: 2px;
 }
 
 .text-field {
@@ -49,26 +98,37 @@
     position: absolute;
     right: 0;
     display: flex;
-    top: 5px;
+    top: 2px;
+    margin-top: 0;
     min-height: 25px;
     min-width: 50px;
 }
 
 .small-button {
-    padding-top: 0;
-    padding-right: 2px;
-    padding-bottom: 0;
-    padding-left: 2px;
+    padding: 0 2px;
     margin-top: 5px;
     margin-bottom: 5px;
+    margin-right: 2px;
     width: 16px;
     height: 16px;
+    border-radius: 2px;
     -unity-text-align: middle-center;
 }
 
-.favorite-button{
-    border-color: rgb(255, 238, 84);
-    color: rgb(255, 238, 84);
+.favorite-button {
+    border-color: rgb(255, 193, 7);
+    background-color: rgba(255, 193, 7, 0.15);
+}
+
+.empty-label {
+    white-space: normal;
+    max-width: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+    padding: 8px 4px;
+    opacity: 0.75;
+    -unity-font-style: italic;
 }
 
 .grid--list {
@@ -84,8 +144,7 @@
     font-size: 11px;
     -unity-text-align: middle-left;
     padding-left: 24px;
-    margin-top: 1px;
-    margin-bottom: 1px;
+    margin: 1px 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

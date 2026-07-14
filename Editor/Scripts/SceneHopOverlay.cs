@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using Unity.Properties;
 using UnityEditor;
 using UnityEditor.Overlays;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 namespace SceneHop.Editor
@@ -102,6 +104,7 @@ namespace SceneHop.Editor
 
             EditorApplication.projectChanged += OnRefreshProject;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            EditorSceneManager.sceneOpened += OnSceneOpened;
         }
 
         public override void OnWillBeDestroyed()
@@ -110,6 +113,16 @@ namespace SceneHop.Editor
 
             EditorApplication.projectChanged -= OnRefreshProject;
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+            EditorSceneManager.sceneOpened -= OnSceneOpened;
+        }
+
+        private void OnSceneOpened(Scene scene, OpenSceneMode mode)
+        {
+            // Rebuild the grid so the current-scene highlight follows the open scene.
+            if (hasInitializedOverlay)
+            {
+                searchField.RefreshOverlay();
+            }
         }
 
         private void OnPlayModeStateChanged(PlayModeStateChange state)
