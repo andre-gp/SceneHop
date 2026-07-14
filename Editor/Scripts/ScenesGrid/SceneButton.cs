@@ -52,6 +52,11 @@ namespace SceneHop.Editor
             button.text = btnName;
             button.AddToClassList("scene-button");
 
+            // Icon shown only in compact list mode (min zoom)
+            Image icon = new Image() { image = AssetDatabase.GetCachedIcon(path) };
+            icon.AddToClassList("scene-button__icon");
+            button.Add(icon);
+
             root.Add(button);
         }
 

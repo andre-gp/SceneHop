@@ -13,6 +13,7 @@ namespace SceneHop.Editor
 
         private VisualElement gridRoot;
         private SceneOverlayData data;
+        private float minScale;
 
         private List<SceneButton> instantiatedButtons = new List<SceneButton>();
         public List<SceneButton> InstantiatedButtons => this.instantiatedButtons;
@@ -36,6 +37,7 @@ namespace SceneHop.Editor
         private void InitScaleSlider(VisualElement root)
         {
             Slider scaleSlider = root.Q<Slider>("slider-scale");
+            minScale = scaleSlider.lowValue;
             scaleSlider.SetBinding(nameof(scaleSlider.value), new DataBinding()
             {
                 bindingMode = BindingMode.TwoWay,
@@ -74,11 +76,28 @@ namespace SceneHop.Editor
 
         private void UpdateButtonsScale(float scale)
         {
+            // At the slider's minimum, collapse the grid into a compact list
+            bool listMode = scale <= minScale;
+
+            gridRoot.EnableInClassList("grid--list", listMode);
+
             foreach (var btn in gridRoot.Children())
             {
-                btn.style.width = defaultBtnSize.x * scale;
-                btn.style.height = defaultBtnSize.y * scale;
-                btn.style.fontSize = 9 * (scale + 0.1f);
+                btn.EnableInClassList("scene-button--list", listMode);
+
+                if (listMode)
+                {
+                    // Clear inline sizes so the list USS rules take over.
+                    btn.style.width = StyleKeyword.Null;
+                    btn.style.height = StyleKeyword.Null;
+                    btn.style.fontSize = StyleKeyword.Null;
+                }
+                else
+                {
+                    btn.style.width = defaultBtnSize.x * scale;
+                    btn.style.height = defaultBtnSize.y * scale;
+                    btn.style.fontSize = 9 * scale;
+                }
             }
         }
     }

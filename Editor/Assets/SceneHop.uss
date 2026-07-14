@@ -9,6 +9,8 @@
     height: 40px;
     font-size: 10px;
     white-space: normal;
+    padding-left: 1px;
+    padding-right: 1px;
 }
 
 .search-button {
@@ -67,4 +69,38 @@
 .favorite-button{
     border-color: rgb(255, 238, 84);
     color: rgb(255, 238, 84);
+}
+
+.grid--list {
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.scene-button--list {
+    width: auto;
+    align-self: stretch;
+    height: 20px;
+    min-height: 20px;
+    font-size: 11px;
+    -unity-text-align: middle-left;
+    padding-left: 24px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.scene-button__icon {
+    display: none;
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    translate: 0 -50%;
+    width: 14px;
+    height: 14px;
+}
+
+.scene-button--list > .scene-button__icon {
+    display: flex;
 }
