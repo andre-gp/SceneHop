@@ -120,6 +120,14 @@
     background-color: rgba(255, 193, 7, 0.15);
 }
 
+.favorite-button:hover {
+    background-color: rgba(255, 193, 7, 0.25);
+}
+
+.favorite-button:active {
+    background-color: rgba(255, 193, 7, 0.35);
+}
+
 .empty-label {
     white-space: normal;
     max-width: 100%;
