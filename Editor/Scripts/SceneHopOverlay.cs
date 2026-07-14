@@ -159,12 +159,12 @@ namespace SceneHop.Editor
 
         private VisualElement InternalGetPanelContent()
         {
-            if (styleSheet == null || mainWindowTemplate == null)
+            // While the asset database is refreshing (first import, package update),
+            // the loaded uxml may be missing or still be the previous version's tree.
+            if (styleSheet == null || mainWindowTemplate == null || EditorApplication.isUpdating)
             {
                 return CreateReloadButton();
             }
-
-            hasInitializedOverlay = true;
 
             var mainWindow = mainWindowTemplate.CloneTree();
             mainWindow.dataSource = this.data;
@@ -173,7 +173,21 @@ namespace SceneHop.Editor
             // linked, I am still adding it again here.
             mainWindow.styleSheets.Add(styleSheet);
 
-            CreateConfigurations(mainWindow);
+            try
+            {
+                CreateConfigurations(mainWindow);
+            }
+            catch (Exception e)
+            {
+                // A stale uxml clone can be missing elements the current code expects.
+                // Fall back to the reload button and rebuild after the project refresh.
+                Debug.LogWarning($"SceneHop: Failed to build the overlay UI, possibly because " +
+                    $"its assets are still being imported. It will rebuild after the next project refresh.\n{e}");
+
+                return CreateReloadButton();
+            }
+
+            hasInitializedOverlay = true;
 
             return mainWindow;
         }
