@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Unity.Properties;
 using UnityEditor;
 using UnityEditor.Overlays;
 using UnityEditor.SceneManagement;
@@ -204,14 +203,28 @@ namespace SceneHop.Editor
 
         private void CreateConfigurations(VisualElement root)
         {
-            Foldout foldout = root.Q<Foldout>("foldout-settings");
-            foldout.SetBinding(nameof(foldout.value), new DataBinding()
+            Button settingsButton = root.Q<Button>("button-settings");
+            VisualElement settingsHeader = root.Q<VisualElement>("settings-header");
+            VisualElement settingsContainer = root.Q<VisualElement>("settings-container");
+
+            settingsButton.iconImage = Background.FromTexture2D((Texture2D)EditorGUIUtility.IconContent("_Popup").image);
+
+            settingsButton.clicked += () =>
             {
-                bindingMode = BindingMode.TwoWay,
-                dataSourcePath = PropertyPath.FromName(nameof(this.data.FoldoutState))
-            });
+                data.FoldoutState = !data.FoldoutState;
+                UpdateSettingsVisibility(settingsButton, settingsHeader, settingsContainer);
+            };
+
+            UpdateSettingsVisibility(settingsButton, settingsHeader, settingsContainer);
 
             searchField.InitSearchField(root);
+        }
+
+        private void UpdateSettingsVisibility(Button settingsButton, VisualElement settingsHeader, VisualElement settingsContainer)
+        {
+            settingsButton.EnableInClassList("settings-button--on", data.FoldoutState);
+            settingsHeader.EnableInClassList("settings-container--hidden", !data.FoldoutState);
+            settingsContainer.EnableInClassList("settings-container--hidden", !data.FoldoutState);
         }
 
         #endregion

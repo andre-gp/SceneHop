@@ -1,22 +1,20 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/SceneHop.uss?fileID=7433441132597879392&amp;guid=7a9758558ff76894cbba79b28d099527&amp;type=3#SceneHop" />
     <ui:VisualElement name="Root" style="flex-grow: 1;">
-        <ui:Foldout text="Settings" name="foldout-settings" class="foldout">
-            <ui:VisualElement class="settings-container">
-                <ui:VisualElement class="settings-row">
-                    <ui:VisualElement class="dropdown-group">
-                        <ui:Button icon-image="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/AddIcon.png?fileID=2800000&amp;guid=3a42e8e652807bb4b8e61710f9752fc0&amp;type=3#AddIcon" name="button-add" tooltip="Add Favorite Group" class="small-button" />
-                        <ui:DropdownField name="search-filter" class="dropdown" />
-                    </ui:VisualElement>
-                    <ui:VisualElement name="toolbar-favorites" class="toolbar-favorites">
-                        <ui:Button icon-image="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/EditIcon.png?fileID=2800000&amp;guid=cea36903b7b57be46ae8cb7254d93daa&amp;type=3#EditIcon" tooltip="Edit" name="button-favorites-edit" class="small-button" />
-                        <ui:Button icon-image="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/ConfirmIcon.png?fileID=2800000&amp;guid=b8abcd8965ef8f042a4be37839baea39&amp;type=3#ConfirmIcon" tooltip="Save" name="button-favorites-save" class="small-button" />
-                        <ui:Button icon-image="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/Cancelcon.png?fileID=2800000&amp;guid=d2d7d1ca712c4fe429a7ad0425fac7de&amp;type=3#Cancelcon" tooltip="Delete" name="button-favorites-delete" class="small-button" />
-                    </ui:VisualElement>
+        <ui:VisualElement name="header" class="header">
+            <ui:Button name="button-settings" tooltip="Settings" class="settings-button" />
+            <ui:VisualElement name="settings-header" class="settings-header">
+                <ui:DropdownField name="search-filter" class="dropdown" />
+                <ui:VisualElement name="toolbar-favorites" class="toolbar-favorites">
+                    <ui:Button icon-image="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/EditIcon.png?fileID=2800000&amp;guid=cea36903b7b57be46ae8cb7254d93daa&amp;type=3#EditIcon" tooltip="Edit" name="button-favorites-edit" class="small-button" />
+                    <ui:Button icon-image="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/ConfirmIcon.png?fileID=2800000&amp;guid=b8abcd8965ef8f042a4be37839baea39&amp;type=3#ConfirmIcon" tooltip="Save" name="button-favorites-save" class="small-button" />
+                    <ui:Button icon-image="project://database/Packages/com.gaton.editor.scenehop/Editor/Assets/Cancelcon.png?fileID=2800000&amp;guid=d2d7d1ca712c4fe429a7ad0425fac7de&amp;type=3#Cancelcon" tooltip="Delete" name="button-favorites-delete" class="small-button" />
                 </ui:VisualElement>
-                <ui:TextField is-delayed="true" name="input-field" class="text-field" />
             </ui:VisualElement>
-        </ui:Foldout>
+        </ui:VisualElement>
+        <ui:VisualElement name="settings-container" class="settings-container">
+            <ui:TextField is-delayed="true" name="input-field" class="text-field" />
+        </ui:VisualElement>
         <ui:Slider value="1" high-value="1.5" name="slider-scale" low-value="0.5" tooltip="Button size" class="zoom-slider" />
         <ui:VisualElement name="Separator" class="separator" style="flex-grow: 1;" />
         <ui:ScrollView horizontal-scroller-visibility="Hidden" class="grid">

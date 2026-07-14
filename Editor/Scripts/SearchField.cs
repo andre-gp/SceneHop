@@ -16,6 +16,8 @@ namespace SceneHop.Editor
     {
         #region Default Values
 
+        private const string ADD_GROUP_OPTION = "Add new group...";
+
         #endregion
 
         #region Member Fields
@@ -34,6 +36,12 @@ namespace SceneHop.Editor
         private string favoriteScenesSavePath;
 
         private bool requestedRefresh = false;
+
+        /// <summary>
+        /// Last selected search type, used to restore the dropdown when the
+        /// 'Add new group...' option is cancelled.
+        /// </summary>
+        private int lastValidIndex = 0;
 
         #endregion
 
@@ -92,6 +100,15 @@ namespace SceneHop.Editor
 
             searchTypeDropdown.RegisterValueChangedCallback(callback =>
             {
+                // The last choice is not a search type; it opens the group creation dialog.
+                if (searchTypeDropdown.index >= searches.Count)
+                {
+                    AddNewGroupFromDropdown();
+                    return;
+                }
+
+                lastValidIndex = searchTypeDropdown.index;
+
                 DeactivateAllOptions();
 
                 CurrentSearchType.InitSearch();
@@ -102,8 +119,9 @@ namespace SceneHop.Editor
 
             DeactivateAllOptions();
 
-            data.DropdownIndex = Mathf.Clamp(data.DropdownIndex, 0, searchTypeDropdown.choices.Count - 1);
+            data.DropdownIndex = Mathf.Clamp(data.DropdownIndex, 0, searches.Count - 1);
             searchTypeDropdown.index = data.DropdownIndex;
+            lastValidIndex = data.DropdownIndex;
 
             searchTypeDropdown.SetBinding(nameof(searchTypeDropdown.index), new DataBinding()
             {
@@ -112,20 +130,6 @@ namespace SceneHop.Editor
             });
 
             searches[searchTypeDropdown.index].InitSearch();
-
-            var button = root.Q<Button>("button-add");
-            button.clickable.clicked += () =>
-            {
-                if (EditorUtility.DisplayDialog("Favorite Scenes", "Create a new favorite scenes group?", "Create", "Cancel"))
-                {
-                    searches.Add(new FavoriteScenesSearch(this, favoriteScenes.AddNewSceneGroup()));
-                    UpdateDropdownChoices();
-
-                    searchTypeDropdown.index = searches.Count - 1;
-
-                    SaveFavoritesDataOnDisk();
-                }
-            };
 
             RefreshOverlay();
         }
@@ -208,7 +212,10 @@ namespace SceneHop.Editor
 
         public void UpdateDropdownChoices()
         {
-            searchTypeDropdown.choices = searches.Select(x => x.Label).ToList();
+            var choices = searches.Select(x => x.Label).ToList();
+            choices.Add(ADD_GROUP_OPTION);
+
+            searchTypeDropdown.choices = choices;
         }
 
         /// <summary>
@@ -253,6 +260,24 @@ namespace SceneHop.Editor
             InputField.style.display = DisplayStyle.None;
 
             favoritesToolbar.EnableToolbar(false);
+        }
+
+        private void AddNewGroupFromDropdown()
+        {
+            if (EditorUtility.DisplayDialog("Favorite Scenes", "Create a new favorite scenes group?", "Create", "Cancel"))
+            {
+                searches.Add(new FavoriteScenesSearch(this, favoriteScenes.AddNewSceneGroup()));
+
+                UpdateDropdownChoices();
+
+                SaveFavoritesDataOnDisk();
+
+                searchTypeDropdown.index = searches.Count - 1;
+            }
+            else
+            {
+                searchTypeDropdown.index = lastValidIndex;
+            }
         }
 
         #endregion
